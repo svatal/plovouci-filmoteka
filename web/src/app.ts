@@ -3,6 +3,7 @@ import * as bs from "bobrilstrap";
 import * as e from "./event";
 import * as ed from "./eventDetail";
 import * as sb from "./sortBy";
+import * as f from "./filter";
 
 export interface IData {
   events: e.IEventInfo[];
@@ -11,11 +12,20 @@ export interface IData {
 interface ICtx extends b.IBobrilCtx {
   data: IData;
   sort: sb.ISortDefinition;
+  tags: string[];
+  filter: f.IFilter[];
 }
 
 export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
     ctx.sort = sb.defaultValue;
+    ctx.filter = [f.createTagFilter("Komedie"), f.createTagFilter("Romantic")];
+
+    let tags = {};
+    ctx.data.events.forEach(e => {
+      e.tags.forEach(t => (tags[t] = 1));
+    });
+    ctx.tags = Object.getOwnPropertyNames(tags);
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
     const maxTime = Date.now();
@@ -27,8 +37,15 @@ export const create = b.createComponent<IData>({
     );
     b.style(me, { padding: 10 });
     me.children = [
-      bs.H1({}, "Romantické komedie"),
-      "Setřídít dle:",
+      bs.H1({}, "Plovoucí filmotéka"),
+      f.create({
+        allTags: ctx.tags,
+        filter: ctx.filter,
+        onChange: filter => {
+          ctx.filter = filter;
+          b.invalidate(ctx);
+        }
+      }),
       sb.create({
         sort: ctx.sort,
         onChange: sort => {
@@ -37,10 +54,9 @@ export const create = b.createComponent<IData>({
         }
       }),
       events
-        .filter(
-          e => e.tags.indexOf("Komedie") >= 0 && e.tags.indexOf("Romantic") >= 0
-        )
+        .filter(e => ctx.filter.every(f => f.test(e)))
         .sort((a, b) => sb.sort(a, b, ctx.sort))
+        .slice(0, 20)
         .map(e => ed.create(e))
     ];
   }

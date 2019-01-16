@@ -40,23 +40,26 @@ const options: ISortOption[] = [
 
 export const defaultValue: ISortDefinition = options[0];
 
-export const create = b.createVirtualComponent<IData>({
+export const create = b.createComponent<IData>({
   render(ctx: ICtx, me: b.IBobrilNode) {
     const selected = options.find(
       o =>
         o.sortAsc === ctx.data.sort.sortAsc && o.sortBy === ctx.data.sort.sortBy
     );
-    me.children = bs.Dropdown(
-      { button: { label: selected.name }, buttonGroup: true },
-      bs.DropdownMenu({}, [
-        options.map(o =>
-          bs.DropdownItem(
-            { onClick: () => ctx.data.onChange(o) },
-            bs.Anchor({}, o.name)
+    me.children = [
+      "Setřídít dle: ",
+      bs.Dropdown(
+        { button: { label: selected.name }, buttonGroup: true },
+        bs.DropdownMenu({}, [
+          options.map(o =>
+            bs.DropdownItem(
+              { onClick: () => ctx.data.onChange(o) },
+              bs.Anchor({}, o.name)
+            )
           )
-        )
-      ])
-    );
+        ])
+      )
+    ];
   }
 });
 
