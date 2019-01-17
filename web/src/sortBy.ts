@@ -38,7 +38,7 @@ const options: ISortOption[] = [
   { name: "Nejlépe hodnocené (IMDb)", sortBy: SortBy.imdb, sortAsc: false }
 ];
 
-export const defaultValue: ISortDefinition = options[0];
+export const defaultValue: ISortDefinition = options[5];
 
 export const create = b.createComponent<IData>({
   render(ctx: ICtx, me: b.IBobrilNode) {
