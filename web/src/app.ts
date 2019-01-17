@@ -12,7 +12,6 @@ export interface IData {
 interface ICtx extends b.IBobrilCtx {
   data: IData;
   sort: sb.ISortDefinition;
-  tags: string[];
   filter: f.IFilter[];
 }
 
@@ -20,12 +19,6 @@ export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
     ctx.sort = sb.defaultValue;
     ctx.filter = [f.createTagFilter("Komedie"), f.createTagFilter("Romantic")];
-
-    let tags = {};
-    ctx.data.events.forEach(e => {
-      e.tags.forEach(t => (tags[t] = 1));
-    });
-    ctx.tags = Object.getOwnPropertyNames(tags);
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
     const maxTime = Date.now();
@@ -35,11 +28,23 @@ export const create = b.createComponent<IData>({
         e.startTime.getTime() < maxTime &&
         e.startTime.getTime() + e.durationInMinutes * 60 * 1000 > minTime
     );
+    const overallTagCounts = getTagCounts(events);
+    const filteredEvents = events.filter(e => ctx.filter.every(f => f.test(e)));
+    const filteredTagCounts = getTagCounts(filteredEvents);
+    const tagInfos = Object.getOwnPropertyNames(overallTagCounts).map<
+      f.ITagInfo
+    >(n => ({
+      name: n,
+      overallCount: overallTagCounts[n],
+      selectionCount:
+        filteredTagCounts[n] === undefined ? 0 : filteredTagCounts[n]
+    }));
+
     b.style(me, { padding: 10 });
     me.children = [
       bs.H1({}, "Plovoucí filmotéka"),
       f.create({
-        allTags: ctx.tags,
+        tags: tagInfos,
         filter: ctx.filter,
         onChange: filter => {
           ctx.filter = filter;
@@ -53,11 +58,18 @@ export const create = b.createComponent<IData>({
           b.invalidate(ctx);
         }
       }),
-      events
-        .filter(e => ctx.filter.every(f => f.test(e)))
+      filteredEvents
         .sort((a, b) => sb.sort(a, b, ctx.sort))
         .slice(0, 20)
         .map(e => ed.create(e))
     ];
   }
 });
+
+function getTagCounts(events: e.IEventInfo[]) {
+  let tags: { [tag: string]: number } = {};
+  events.forEach(e => {
+    e.tags.forEach(t => (tags[t] = (tags[t] === undefined ? 0 : tags[t]) + 1));
+  });
+  return tags;
+}

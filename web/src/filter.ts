@@ -3,9 +3,15 @@ import * as bs from "bobrilstrap";
 import * as e from "./event";
 
 export interface IData {
-  allTags: string[];
+  tags: ITagInfo[];
   filter: IFilter[];
   onChange: (f: IFilter[]) => void;
+}
+
+export interface ITagInfo {
+  name: string;
+  overallCount: number;
+  selectionCount: number;
 }
 
 export interface IFilter {
@@ -37,20 +43,25 @@ export const create = b.createComponent<IData>({
             bs.Glyphicon({ icon: bs.GlyphIcon.Plus })
           ]),
           bs.DropdownMenu({}, [
-            ctx.data.allTags
+            ctx.data.tags
               .filter(
-                tagName => ctx.data.filter.map(f => f.id).indexOf(tagName) < 0
+                tag =>
+                  ctx.data.filter.map(f => f.id).indexOf(tag.name) < 0 &&
+                  tag.selectionCount > 0
               )
-              .map(tagName =>
+              .map(tag =>
                 bs.DropdownItem(
                   {
                     onClick: () =>
                       ctx.data.onChange([
                         ...ctx.data.filter,
-                        createTagFilter(tagName)
+                        createTagFilter(tag.name)
                       ])
                   },
-                  bs.Anchor({}, tagName)
+                  bs.Anchor(
+                    {},
+                    `${tag.name} (${tag.selectionCount}/${tag.overallCount})`
+                  )
                 )
               )
           ])

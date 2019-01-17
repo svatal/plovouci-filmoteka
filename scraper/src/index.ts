@@ -76,6 +76,7 @@ const czPrograms = [
 ];
 
 function isCZProgram(name: string) {
+  if (name === "Filmbox Arthouse") return false; // only filmbox in EN
   for (let i = 0; i < czPrograms.length; i++)
     if (name.indexOf(czPrograms[i]) >= 0) return true;
   return false;
