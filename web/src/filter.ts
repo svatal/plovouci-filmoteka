@@ -5,12 +5,13 @@ import * as e from "./event";
 export interface IData {
   tags: ITagInfo[];
   filter: IFilter[];
+  eventCount: number;
+  selectedCount: number;
   onChange: (f: IFilter[]) => void;
 }
 
 export interface ITagInfo {
   name: string;
-  overallCount: number;
   selectionCount: number;
 }
 
@@ -58,15 +59,13 @@ export const create = b.createComponent<IData>({
                         createTagFilter(tag.name)
                       ])
                   },
-                  bs.Anchor(
-                    {},
-                    `${tag.name} (${tag.selectionCount}/${tag.overallCount})`
-                  )
+                  bs.Anchor({}, `${tag.name} (${tag.selectionCount})`)
                 )
               )
           ])
         ])
-      ])
+      ]),
+      ` (${ctx.data.selectedCount}/${ctx.data.eventCount})`
     ];
   }
 });

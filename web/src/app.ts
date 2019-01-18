@@ -28,16 +28,13 @@ export const create = b.createComponent<IData>({
         e.startTime.getTime() < maxTime &&
         e.startTime.getTime() + e.durationInMinutes * 60 * 1000 > minTime
     );
-    const overallTagCounts = getTagCounts(events);
     const filteredEvents = events.filter(e => ctx.filter.every(f => f.test(e)));
     const filteredTagCounts = getTagCounts(filteredEvents);
-    const tagInfos = Object.getOwnPropertyNames(overallTagCounts).map<
+    const tagInfos = Object.getOwnPropertyNames(filteredTagCounts).map<
       f.ITagInfo
     >(n => ({
       name: n,
-      overallCount: overallTagCounts[n],
-      selectionCount:
-        filteredTagCounts[n] === undefined ? 0 : filteredTagCounts[n]
+      selectionCount: filteredTagCounts[n]
     }));
 
     b.style(me, { padding: 10 });
@@ -45,6 +42,8 @@ export const create = b.createComponent<IData>({
       bs.H1({}, "Plovoucí filmotéka"),
       f.create({
         tags: tagInfos,
+        eventCount: events.length,
+        selectedCount: filteredEvents.length,
         filter: ctx.filter,
         onChange: filter => {
           ctx.filter = filter;
