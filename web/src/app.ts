@@ -5,6 +5,8 @@ import * as ed from "./eventDetail";
 import * as sb from "./sortBy";
 import * as f from "./filter";
 
+const eventsOnPage = 20;
+
 export interface IData {
   events: e.IEventInfo[];
 }
@@ -13,12 +15,14 @@ interface ICtx extends b.IBobrilCtx {
   data: IData;
   sort: sb.ISortDefinition;
   filter: f.IFilter[];
+  displayMax: number;
 }
 
 export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
     ctx.sort = sb.defaultValue;
     ctx.filter = [f.createTagFilter("Komedie"), f.createTagFilter("Romantic")];
+    ctx.displayMax = eventsOnPage;
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
     const maxTime = Date.now();
@@ -47,6 +51,7 @@ export const create = b.createComponent<IData>({
         filter: ctx.filter,
         onChange: filter => {
           ctx.filter = filter;
+          ctx.displayMax = eventsOnPage;
           b.invalidate(ctx);
         }
       }),
@@ -54,13 +59,28 @@ export const create = b.createComponent<IData>({
         sort: ctx.sort,
         onChange: sort => {
           ctx.sort = sort;
+          ctx.displayMax = eventsOnPage;
           b.invalidate(ctx);
         }
       }),
       filteredEvents
         .sort((a, b) => sb.sort(a, b, ctx.sort))
-        .slice(0, 20)
-        .map(e => ed.create(e))
+        .slice(0, ctx.displayMax)
+        .map(e => ed.create(e)),
+      filteredEvents.length > ctx.displayMax &&
+        b.style(
+          bs.Button(
+            {
+              onClick: () => {
+                ctx.displayMax += eventsOnPage;
+                b.invalidate(ctx);
+                return true;
+              }
+            },
+            "Další"
+          ),
+          bs.helpers.centerBlock
+        )
     ];
   }
 });
