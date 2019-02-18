@@ -32,7 +32,7 @@ async function main() {
 }
 
 function isSerialName(name: string) {
-  return !!name.match(/\([\d ,]+\)$/);
+  return !!name.match(/\([\d ,-]+\)( \(.*\))?$/);
 }
 
 const czPrograms = [
@@ -76,7 +76,7 @@ const czPrograms = [
 ];
 
 function isCZProgram(name: string) {
-  if (name === "Filmbox Arthouse") return false; // only filmbox in EN
+  if (name.indexOf("Filmbox Arthouse") >= 0) return false; // only filmbox in EN
   for (let i = 0; i < czPrograms.length; i++)
     if (name.indexOf(czPrograms[i]) >= 0) return true;
   return false;
