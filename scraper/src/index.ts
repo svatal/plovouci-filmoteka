@@ -7,22 +7,36 @@ main();
 
 async function main() {
   let today = Date.now();
-  const events: parser.IBasicEventInfo[] = [];
+  const events: { [name: string]: parser.IBasicEventInfo[] } = {};
+  let totalEvents = 0;
   for (let i = -7; i < 5; i++) {
     const day = new Date(today + i * 24 * 60 * 60 * 1000);
     const content = await data.getContent(day);
-    events.push(...parser.parseDay(content, day));
-  }
-  console.log("events", events.length);
-  const exportEvents = await mapAwait(
-    events.filter(
-      e =>
+    const dayEvents = parser.parseDay(content, day);
+    totalEvents += dayEvents.length;
+    dayEvents.forEach(e => {
+      if (
         isCZProgram(e.channelName) &&
         e.durationInMinutes > 60 &&
         !isSerialName(e.name)
-    ),
-    async e => ({ ...e, ...parser.parseInfo(await data.getInfo(e.id)) })
-  );
+      )
+        (events[e.name] = events[e.name] || []).push(e);
+    });
+  }
+  console.log("total events:", totalEvents);
+  let exportEvents: parser.IEventInfo[] = [];
+  for (const name in events) {
+    if (events[name].length < 10) {
+      // TODO: actually merge events, based on description && poster match
+      exportEvents.push(
+        ...(await mapAwait(events[name], async e => ({
+          ...e,
+          ...parser.parseInfo(await data.getInfo(e.id))
+        })))
+      );
+    }
+  }
+  console.log("movies:", exportEvents.length);
   const eventsString = s.serialize(exportEvents);
   fs.writeFileSync(
     "../dist/events.js",
