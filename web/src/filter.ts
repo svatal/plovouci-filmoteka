@@ -17,7 +17,7 @@ export interface ITagInfo {
 
 export interface IFilter {
   id: string;
-  test: (ev: e.IEventInfo) => boolean;
+  test: (ev: e.IExtendedEventInfo) => boolean;
 }
 
 interface ICtx extends b.IBobrilCtx {

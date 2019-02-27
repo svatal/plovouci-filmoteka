@@ -64,11 +64,11 @@ export const create = b.createComponent<IData>({
 });
 
 export function sort(
-  a: e.IEventInfo,
-  b: e.IEventInfo,
+  a: e.IMovie,
+  b: e.IMovie,
   { sortBy, sortAsc }: ISortDefinition
 ) {
-  const getter = sortPropertyGetter(sortBy);
+  const getter = sortPropertyGetter(sortBy, sortAsc);
   const aVal = getter(a);
   const bVal = getter(b);
   const ascModifier = sortAsc ? 1 : -1;
@@ -86,25 +86,36 @@ export function sort(
 }
 
 function sortPropertyGetter(
-  sortBy: SortBy
-): (e: e.IEventInfo) => string | number | undefined {
+  sortBy: SortBy,
+  sortAsc: boolean
+): (m: e.IMovie) => string | number | undefined {
   switch (sortBy) {
     case SortBy.name:
-      return e => e.name;
+      return m => m.name;
     case SortBy.duration:
-      return e => e.durationInMinutes;
+      return m =>
+        Math.min(
+          ...m.events.filter(e.canBeViewed).map(e => e.durationInMinutes)
+        );
     case SortBy.airTime:
-      return e => e.startTime.getTime();
+      return m =>
+        sortAsc
+          ? Math.max(
+              ...m.events.filter(e.canBeViewed).map(e => e.startTime.getTime())
+            )
+          : Math.min(
+              ...m.events.filter(e.canBeViewed).map(e => e.startTime.getTime())
+            );
     case SortBy.csfd:
-      return e => getMDB(e, "ČSFD");
+      return m => getMDB(m, "ČSFD");
     case SortBy.imdb:
-      return e => getMDB(e, "IMDb");
+      return m => getMDB(m, "IMDb");
     default:
-      return e => e.name;
+      return m => m.name;
   }
 }
 
-function getMDB(e: e.IEventInfo, mdbName: string): number | undefined {
+function getMDB(e: e.IExtendedEventInfo, mdbName: string): number | undefined {
   const mdb = e.mdbs.find(mdb => mdb.text.indexOf(mdbName) >= 0);
   if (!mdb) return undefined;
   return parseInt(mdb.text);

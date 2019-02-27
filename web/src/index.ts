@@ -5,7 +5,7 @@ import { deserialize } from "../../shared/serializer";
 
 b.asset("../../dist/events.js");
 declare const es: string;
-const events = deserialize(es);
+const movies = deserialize(es);
 
 bs.init();
-b.init(() => app.create({ events }));
+b.init(() => app.create({ movies: movies }));

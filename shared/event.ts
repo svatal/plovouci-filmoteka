@@ -1,9 +1,12 @@
-export interface IBasicEventInfo {
+export interface IEvent {
   channelName: string;
   startTime: Date;
   durationInMinutes: number;
-  name: string;
   id: string;
+}
+
+export interface IBasicEventInfo extends IEvent {
+  name: string;
 }
 
 export interface IExtendedEventInfo {
@@ -18,4 +21,9 @@ export interface IEventInfo extends IBasicEventInfo, IExtendedEventInfo {}
 export interface IMdbEntry {
   text: string;
   link: string;
+}
+
+export interface IMovie extends IExtendedEventInfo {
+  name: string;
+  events: IEvent[];
 }

@@ -1,5 +1,6 @@
 import * as parser from "./parser";
 import * as data from "./dataProvider";
+import * as eventMerger from "./eventsMerger";
 import * as s from "../../shared/serializer";
 import fs from "fs";
 
@@ -24,23 +25,24 @@ async function main() {
     });
   }
   console.log("total events:", totalEvents);
-  let exportEvents: parser.IEventInfo[] = [];
+  let movies: parser.IMovie[] = [];
   for (const name in events) {
     if (events[name].length < 10) {
-      // TODO: actually merge events, based on description && poster match
-      exportEvents.push(
-        ...(await mapAwait(events[name], async e => ({
-          ...e,
-          ...parser.parseInfo(await data.getInfo(e.id))
-        })))
+      movies.push(
+        ...eventMerger.merge(
+          await mapAwait(events[name], async e => ({
+            ...e,
+            ...parser.parseInfo(await data.getInfo(e.id))
+          }))
+        )
       );
     }
   }
-  console.log("movies:", exportEvents.length);
-  const eventsString = s.serialize(exportEvents);
+  console.log("movies:", movies.length);
+  const moviesString = s.serialize(movies);
   fs.writeFileSync(
     "../dist/events.js",
-    `var es='${eventsString.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`
+    `var es='${moviesString.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`
   );
   data.printStats();
 }

@@ -8,7 +8,7 @@ import * as f from "./filter";
 const eventsOnPage = 20;
 
 export interface IData {
-  events: e.IEventInfo[];
+  movies: e.IMovie[];
 }
 
 interface ICtx extends b.IBobrilCtx {
@@ -25,13 +25,7 @@ export const create = b.createComponent<IData>({
     ctx.displayMax = eventsOnPage;
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
-    const maxTime = Date.now();
-    const minTime = Date.now() - 7 * 24 * 60 * 60 * 1000;
-    const events = ctx.data.events.filter(
-      e =>
-        e.startTime.getTime() < maxTime &&
-        e.startTime.getTime() + e.durationInMinutes * 60 * 1000 > minTime
-    );
+    const events = ctx.data.movies.filter(m => m.events.some(e.canBeViewed));
     const filteredEvents = events.filter(e => ctx.filter.every(f => f.test(e)));
     const filteredTagCounts = getTagCounts(filteredEvents);
     const tagInfos = Object.getOwnPropertyNames(filteredTagCounts).map<
@@ -85,7 +79,7 @@ export const create = b.createComponent<IData>({
   }
 });
 
-function getTagCounts(events: e.IEventInfo[]) {
+function getTagCounts(events: e.IExtendedEventInfo[]) {
   let tags: { [tag: string]: number } = {};
   events.forEach(e => {
     e.tags.forEach(t => (tags[t] = (tags[t] === undefined ? 0 : tags[t]) + 1));
