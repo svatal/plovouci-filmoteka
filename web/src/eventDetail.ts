@@ -25,7 +25,10 @@ export const create = b.createVirtualComponent<IData>({
               .filter(ev => !e.isTooFarInThePast(ev))
               .map(e => airTime.create(e)),
             ...m.mdbs.map(mdb =>
-              bs.Badge({ style: { backgroundColor: "red" } }, mdb.text)
+              bs.Anchor(
+                { href: mdb.link, target: bs.Target.Blank },
+                bs.Badge({ style: { backgroundColor: "red" } }, mdb.text)
+              )
             )
           ]
         }),
