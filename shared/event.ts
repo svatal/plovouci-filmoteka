@@ -3,6 +3,7 @@ export interface IEvent {
   startTime: Date;
   durationInMinutes: number;
   id: string;
+  name?: string;
 }
 
 export interface IBasicEventInfo extends IEvent {

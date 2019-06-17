@@ -25,6 +25,10 @@ export function getInfo(eventId: string) {
   );
 }
 
+export function know(cacheId: string) {
+  return cache.contains(cacheId);
+}
+
 let requestCounter = 0;
 let remoteRequestCounter = 0;
 let waitCounter = 0;
@@ -48,7 +52,7 @@ async function get(cacheId: string, fallbackUrl: string) {
     blockingWait(1000);
     waitCounter++;
   }
-  const response = await axios.get(fallbackUrl);
+  const response = await axios.get<string>(fallbackUrl);
   const data = response.data;
   cache.set(cacheId, data);
   return data;

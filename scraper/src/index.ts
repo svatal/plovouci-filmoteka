@@ -4,6 +4,8 @@ import * as eventMerger from "./eventsMerger";
 import * as s from "../../shared/serializer";
 import fs from "fs";
 
+const showEpisodes = true;
+
 main();
 
 async function main() {
@@ -16,30 +18,51 @@ async function main() {
     const dayEvents = parser.parseDay(content, day);
     totalEvents += dayEvents.length;
     dayEvents.forEach(e => {
-      if (
-        isCZProgram(e.channelName) &&
-        e.durationInMinutes > 60 &&
-        !isSerialName(e.name)
-      )
-        (events[e.name] = events[e.name] || []).push(e);
+      if (!isCZProgram(e.channelName)) return;
+
+      const serialNameMatch = e.name.match(/(.*?)( [MDCLXVI]*)? \(.*/);
+      const name = serialNameMatch ? serialNameMatch[1] : e.name;
+      (events[name] = events[name] || []).push(e);
     });
   }
   console.log("total events:", totalEvents);
+
   let movies: parser.IMovie[] = [];
   for (const name in events) {
-    if (events[name].length < 10) {
+    const eventsGroup = events[name];
+    const performExactMatch =
+      eventsGroup.length < 10 &&
+      eventsGroup[0].name === name &&
+      eventsGroup[0].durationInMinutes > 60;
+    if (performExactMatch) {
       movies.push(
         ...eventMerger.merge(
-          await mapAwait(events[name], async e => ({
+          await mapAwait(eventsGroup, async e => ({
             ...e,
             ...parser.parseInfo(await data.getInfo(e.id))
           }))
         )
       );
+    } else {
+      if (eventsGroup[0].name === name) continue; // skip non-serials
+      if (!showEpisodes) continue;
+      const knownEvent = eventsGroup.find(e => data.know(e.id));
+      const infoContent = knownEvent
+        ? await data.getInfo(knownEvent.id)
+        : await data.getInfo(
+            eventsGroup.reduce(
+              (c, e) => (c.startTime.getTime() > e.startTime.getTime() ? c : e),
+              { id: "never get here", startTime: new Date(0) }
+            ).id
+          );
+      movies.push(
+        eventMerger.mergeToOne(eventsGroup, parser.parseInfo(infoContent), name)
+      );
     }
   }
   console.log("movies:", movies.length);
   const moviesString = s.serialize(movies);
+
   fs.writeFileSync(
     "../dist/events.js",
     `var es='${moviesString.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`

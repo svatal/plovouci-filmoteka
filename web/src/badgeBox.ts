@@ -1,6 +1,4 @@
 import * as b from "bobril";
-import * as bs from "bobrilstrap";
-import * as e from "./event";
 
 export interface IData {
   badges: b.IBobrilNode[];

@@ -13,7 +13,8 @@ export function serialize(movies: e.IMovie[]): string {
       e.id,
       e.channelName,
       e.startTime.getTime(),
-      e.durationInMinutes
+      e.durationInMinutes,
+      ...(e.name ? [e.name] : [])
     ])
   ]);
   return JSON.stringify(csv);
@@ -34,7 +35,8 @@ export function deserialize(s: string): e.IMovie[] {
         id: e.shift(),
         channelName: e.shift(),
         startTime: new Date(e.shift()),
-        durationInMinutes: e.shift()
+        durationInMinutes: e.shift(),
+        name: e.shift()
       }))
     };
     return ei;
