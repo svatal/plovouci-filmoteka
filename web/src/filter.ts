@@ -17,7 +17,7 @@ export interface ITagInfo {
 
 export interface IFilter {
   id: string;
-  test: (ev: e.IExtendedEventInfo) => boolean;
+  test: (ev: e.IMovie) => boolean;
 }
 
 interface ICtx extends b.IBobrilCtx {
@@ -61,6 +61,19 @@ export const create = b.createComponent<IData>({
                   },
                   bs.Anchor({}, `${tag.name} (${tag.selectionCount})`)
                 )
+              ),
+            [
+              createTimeFilter(0, 60),
+              createTimeFilter(0, 90),
+              createTimeFilter(60, 999),
+              createTimeFilter(80, 999)
+            ]
+              .filter(f => ctx.data.filter.map(f => f.id).indexOf(f.id) < 0)
+              .map(f =>
+                bs.DropdownItem(
+                  { onClick: () => ctx.data.onChange([...ctx.data.filter, f]) },
+                  bs.Anchor({}, f.id)
+                )
               )
           ])
         ])
@@ -74,5 +87,15 @@ export function createTagFilter(tagName: string): IFilter {
   return {
     id: tagName,
     test: e => e.tags.indexOf(tagName) >= 0
+  };
+}
+
+export function createTimeFilter(from: number, to: number): IFilter {
+  return {
+    id: `${from}-${to} minut`,
+    test: e =>
+      e.events.some(
+        e => e.durationInMinutes >= from && e.durationInMinutes <= to
+      )
   };
 }
