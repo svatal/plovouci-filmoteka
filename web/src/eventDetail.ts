@@ -39,7 +39,7 @@ export const create = b.createVirtualComponent<IData>({
             )
           ]
         }),
-        bs.MediaHeading2({}, [m.name]),
+        bs.MediaHeading2({}, [m.year > 0 ? `${m.name} (${m.year})` : m.name]),
         m.tags.map(t => bs.Badge({}, t)),
         { tag: "br" },
         showEpisodes &&

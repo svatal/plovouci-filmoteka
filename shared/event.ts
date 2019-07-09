@@ -14,6 +14,7 @@ export interface IExtendedEventInfo {
   tags: string[];
   description: string;
   posterUrl: string;
+  year: number;
   mdbs: IMdbEntry[];
 }
 

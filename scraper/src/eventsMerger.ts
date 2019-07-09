@@ -53,6 +53,7 @@ function toMovie(
     mdbs: ee.mdbs,
     name: groupName || be.name,
     posterUrl: ee.posterUrl,
+    year: ee.year,
     tags: ee.tags,
     events: [toEvent(be, groupName)]
   };

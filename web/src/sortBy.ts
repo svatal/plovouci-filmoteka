@@ -7,7 +7,8 @@ export enum SortBy {
   name,
   duration,
   csfd,
-  imdb
+  imdb,
+  year
 }
 
 export interface IData {
@@ -31,11 +32,13 @@ interface ISortOption extends ISortDefinition {
 const options: ISortOption[] = [
   { name: "Název", sortBy: SortBy.name, sortAsc: true },
   { name: "Nejdříve zmizí", sortBy: SortBy.airTime, sortAsc: true },
-  { name: "Nejnovější", sortBy: SortBy.airTime, sortAsc: false },
+  { name: "Nejnověji vysílané", sortBy: SortBy.airTime, sortAsc: false },
   { name: "Nejkratší", sortBy: SortBy.duration, sortAsc: true },
   { name: "Nejdelší", sortBy: SortBy.duration, sortAsc: false },
   { name: "Nejlépe hodnocené (ČSFD)", sortBy: SortBy.csfd, sortAsc: false },
-  { name: "Nejlépe hodnocené (IMDb)", sortBy: SortBy.imdb, sortAsc: false }
+  { name: "Nejlépe hodnocené (IMDb)", sortBy: SortBy.imdb, sortAsc: false },
+  { name: "Nejnovější (rok)", sortBy: SortBy.year, sortAsc: false },
+  { name: "Nejstarší (rok)", sortBy: SortBy.year, sortAsc: true }
 ];
 
 export const defaultValue: ISortDefinition = options[5];
@@ -110,6 +113,8 @@ function sortPropertyGetter(
       return m => getMDB(m, "ČSFD");
     case SortBy.imdb:
       return m => getMDB(m, "IMDb");
+    case SortBy.year:
+      return m => m.year;
     default:
       return m => m.name;
   }

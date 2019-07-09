@@ -64,7 +64,7 @@ function parseChannel(tr: CheerioElement, date: Date) {
 export function parseInfo(content: string): IExtendedEventInfo {
   const $content = cheerio.load(content);
   const tags: string[] = [];
-  let year = "";
+  let year = 0;
   $content(".event-info .event-percentage .event-percentage-line").each(
     (_, line) => {
       const $line = cheerio.load(line);
@@ -72,7 +72,7 @@ export function parseInfo(content: string): IExtendedEventInfo {
         .text()
         .replace("·", "");
       if (text.trim().match(/^\d{4}$/)) {
-        year = text;
+        year = +text;
       } else {
         if (text.indexOf("\n") >= 0) {
           tags.push(...text.split("/").map(s => s.trim()));
@@ -98,6 +98,7 @@ export function parseInfo(content: string): IExtendedEventInfo {
     tags,
     description,
     posterUrl,
+    year,
     mdbs
   };
 }

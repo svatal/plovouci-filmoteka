@@ -1,6 +1,6 @@
 import * as e from "./event";
 
-type IRow = (string | string[] | (string | number)[][])[];
+type IRow = (number | string | string[] | (string | number)[][])[];
 
 export function serialize(movies: e.IMovie[]): string {
   const csv = movies.map<IRow>(movie => [
@@ -8,6 +8,7 @@ export function serialize(movies: e.IMovie[]): string {
     movie.tags,
     movie.description.split("\n"),
     movie.posterUrl,
+    movie.year,
     movie.mdbs.map(mdb => [mdb.text, mdb.link]),
     movie.events.map(e => [
       e.id,
@@ -28,6 +29,7 @@ export function deserialize(s: string): e.IMovie[] {
       tags: row.shift(),
       description: row.shift().join("\n"),
       posterUrl: row.shift(),
+      year: row.shift(),
       mdbs: row
         .shift()
         .map((mdb: string[]) => ({ text: mdb.shift(), link: mdb.shift() })),
