@@ -21,7 +21,11 @@ interface ICtx extends b.IBobrilCtx {
 export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
     ctx.sort = sb.defaultValue;
-    ctx.filter = [f.createTagFilter("Komedie"), f.createTagFilter("Romantic")];
+    ctx.filter = [
+      f.createTagFilter("Komedie"),
+      f.createTagFilter("Romantic"),
+      f.createTimeFilter(60, 999)
+    ];
     ctx.displayMax = eventsOnPage;
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
