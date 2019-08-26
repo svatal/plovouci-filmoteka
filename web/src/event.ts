@@ -1,5 +1,5 @@
-import * as e from "../../shared/event";
-export * from "../../shared/event";
+import * as e from "shared/event";
+export * from "shared/event";
 
 export function isTooFarInThePast(ev: e.IEvent) {
   const minTime = Date.now() - 7 * 24 * 60 * 60 * 1000;

@@ -4,7 +4,7 @@ import {
   IEvent,
   IBasicEventInfo,
   IExtendedEventInfo
-} from "../../shared/event";
+} from "shared/event";
 
 export function merge(events: IEventInfo[]): IMovie[] {
   return events.reduce(tryAppendEventToMovies, <IMovie[]>[]);

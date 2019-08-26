@@ -1,10 +1,6 @@
 import * as cheerio from "cheerio";
-import {
-  IBasicEventInfo,
-  IExtendedEventInfo,
-  IMdbEntry
-} from "../../shared/event";
-export * from "../../shared/event";
+import { IBasicEventInfo, IExtendedEventInfo, IMdbEntry } from "shared/event";
+export * from "shared/event";
 
 export function parseDay(fileContent: string, date: Date) {
   const $content = cheerio.load(`<table>${fileContent}</table>`);

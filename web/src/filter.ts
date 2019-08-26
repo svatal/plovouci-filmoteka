@@ -29,7 +29,7 @@ export const create = b.createComponent<IData>({
     me.children = [
       "Filtr: ",
       bs.ButtonGroup({}, [
-        ...ctx.data.filter.map((f, i) =>
+        ...ctx.data.filter.map(f =>
           bs.Button(
             {
               title: f.id,

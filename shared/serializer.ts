@@ -36,7 +36,7 @@ export function deserialize(s: string): e.IMovie[] {
       events: row.shift().map((e: (string | number)[]) => ({
         id: e.shift(),
         channelName: e.shift(),
-        startTime: new Date(e.shift()),
+        startTime: new Date(e.shift()!),
         durationInMinutes: e.shift(),
         name: e.shift()
       }))

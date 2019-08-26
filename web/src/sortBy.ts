@@ -13,7 +13,7 @@ export enum SortBy {
 
 export interface IData {
   sort: ISortDefinition;
-  onChange(sort: ISortDefinition);
+  onChange(sort: ISortDefinition): void;
 }
 
 interface ICtx extends b.IBobrilCtx {
@@ -48,7 +48,7 @@ export const create = b.createComponent<IData>({
     const selected = options.find(
       o =>
         o.sortAsc === ctx.data.sort.sortAsc && o.sortBy === ctx.data.sort.sortBy
-    );
+    )!;
     me.children = [
       "Setřídít dle: ",
       bs.Dropdown(
@@ -70,7 +70,7 @@ export function sort(
   a: e.IMovie,
   b: e.IMovie,
   { sortBy, sortAsc }: ISortDefinition
-) {
+): number {
   const getter = sortPropertyGetter(sortBy, sortAsc);
   const aVal = getter(a);
   const bVal = getter(b);

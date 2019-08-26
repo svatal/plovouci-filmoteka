@@ -31,7 +31,7 @@ function romanToNumber(word: string): string {
   const letters = word.toUpperCase().split("");
   let num = 0;
   while (letters.length) {
-    const val = lookup[letters.shift()];
+    const val = lookup[letters.shift()!];
     num += val < lookup[letters[0]] ? -val : val;
   }
   return leftPad(num.toString(), 7);

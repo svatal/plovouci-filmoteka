@@ -19,7 +19,7 @@ export const create = b.createVirtualComponent<IData>({
   render(ctx: ICtx, me: b.IBobrilNode) {
     const m = ctx.data;
     const events = m.events.filter(ev => !e.isTooFarInThePast(ev));
-    const episodeNames = Array.from(new Set(events.map(e => e.name))).sort(
+    const episodeNames = Array.from(new Set(events.map(e => e.name!))).sort(
       compare
     );
     const showEpisodes = !!events[0].name;

@@ -1,7 +1,7 @@
 import * as parser from "./parser";
 import * as data from "./dataProvider";
 import * as eventMerger from "./eventsMerger";
-import * as s from "../../shared/serializer";
+import * as s from "shared/serializer";
 import fs from "fs";
 
 const showEpisodes = true;
@@ -64,7 +64,7 @@ async function main() {
   const moviesString = s.serialize(movies);
 
   fs.writeFileSync(
-    "../dist/events.js",
+    "../scraper-dist/events.js",
     `var es='${moviesString.replace(/\\/g, "\\\\").replace(/'/g, "\\'")}'`
   );
   data.printStats();

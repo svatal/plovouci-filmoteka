@@ -1,5 +1,5 @@
 {
-  "name": "plovouci-filmoteka",
+  "name": "web",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.ts",
@@ -11,10 +11,35 @@
   "dependencies": {
     "@types/jquery": "^3.3.21",
     "bobril": "^8.17.0",
-    "bobrilstrap": "^3.0.2"
+    "bobrilstrap": "^3.0.2",
+    "scraper-dist": "*",
+    "shared": "*"
   },
   "bobril": {
     "title": "Plovoucí fimotéka",
-    "interactiveToDisk": true
+    "bbVersion": "0.84.0",
+    "tsconfigUpdate": true,
+    "compilerOptions": {
+      "strictPropertyInitialization": false,
+      "reactNamespace": "b",
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "strict": true,
+      "lib": [
+        "es5",
+        "dom",
+        "es2015.core",
+        "es2015.promise",
+        "es2015.iterable",
+        "es2015.collection"
+      ],
+      "bbVersion": "0.87.0",
+      "types": [
+        "node_modules/@types"
+      ]
+    },
+    "allowModuleDeepImport": true
   }
 }

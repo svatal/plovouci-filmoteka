@@ -1,5 +1,4 @@
-dist/*
+scraper-dist/*
 scraper/cache/*
-scraper/node_modules/*
 web/dist/*
-web/node_modules/*
+node_modules
