@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": {
     "packages": [
+      "scraper-shared",
       "scraper",
       "scraper-dist",
       "shared",
