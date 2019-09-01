@@ -2,6 +2,7 @@ import * as parser from "./parser";
 import * as data from "./dataProvider";
 import * as eventMerger from "./eventsMerger";
 import * as s from "shared/serializer";
+import { mapAwait } from "scraper-shared/src/util";
 import fs from "fs";
 
 const showEpisodes = true;
@@ -18,7 +19,7 @@ async function main() {
     const dayEvents = parser.parseDay(content, day);
     totalEvents += dayEvents.length;
     dayEvents.forEach(e => {
-      if (!isCZProgram(e.channelName)) return;
+      if (getProgramLang(e.channelName) !== Lang.cz) return;
 
       const serialNameMatch = e.name.match(/(.*?)( [MDCLXVI]*)? \(.*/);
       const name = serialNameMatch ? serialNameMatch[1] : e.name;
@@ -26,6 +27,7 @@ async function main() {
     });
   }
   console.log("total events:", totalEvents);
+  console.log("CZ events:", Object.keys(events).length);
 
   let movies: parser.IMovie[] = [];
   for (const name in events) {
@@ -76,60 +78,119 @@ function isSerialName(name: string) {
   return !!name.match(/\([\d ,-]+\)( \(.*\))?$/);
 }
 
-const czPrograms = [
-  "ČT",
-  "Déčko",
-  "Seznam",
-  "Prima",
-  "Nova",
-  "Óčko",
-  "HBO",
-  "Barrandov",
-  "AXN",
-  "FilmBox",
-  "National Geographic",
-  "Spektrum",
-  "Viasat",
-  // "Eurosport",
-  // "Sport",
-  "Film Europe",
-  "Relax",
-  "Rebel",
-  "Retro",
-  "CS Film",
-  "CZ",
-  "TUTY",
-  "Nick",
-  "Československo",
-  "Jim Jam",
-  "Minimax",
-  "Crime",
-  "History Channel",
-  "Film+",
-  "Filmbox",
-  "Kino Svět",
-  "AMC",
-  "Polar",
-  "TVS",
-  "V1 TV",
-  "TV Noe",
-  "Disney Channel"
-];
-
-function isCZProgram(name: string) {
-  if (name.indexOf("Filmbox Arthouse") >= 0) return false; // only filmbox in EN
-  for (let i = 0; i < czPrograms.length; i++)
-    if (name.indexOf(czPrograms[i]) >= 0) return true;
-  return false;
+enum Lang {
+  noProgram,
+  sport,
+  music,
+  hobby,
+  slowTv,
+  news,
+  doc,
+  cz,
+  czRegio,
+  sk,
+  en,
+  fr,
+  de
 }
 
-async function mapAwait<TIn, TOut>(
-  input: TIn[],
-  callback: (input: TIn) => Promise<TOut>
-) {
-  const output: TOut[] = [];
-  for (let i = 0; i < input.length; i++) {
-    output.push(await callback(input[i]));
+const programs: [RegExp, Lang][] = [
+  [/sport/i, Lang.sport],
+  [/^ct24$/, Lang.news],
+  [/^ct/, Lang.cz],
+  [/^Seznam$/, Lang.cz],
+  [/^primazoom$/, Lang.doc],
+  [/^prima/, Lang.cz],
+  [/^nova/, Lang.cz],
+  [/^fanda$/, Lang.cz],
+  [/^smichov$/, Lang.cz],
+  [/^telka$/, Lang.cz],
+  [/^cartoon_network/, Lang.cz],
+  [/^stv/, Lang.sk],
+  [/^markiza/, Lang.sk],
+  [/^ta3$/, Lang.sk],
+  [/^joj/, Lang.sk],
+  [/^ocko/, Lang.music],
+  [/^HBO/i, Lang.cz],
+  [/barrandov_muzika/, Lang.music],
+  [/barrandov/, Lang.cz],
+  [/^axn/, Lang.cz],
+  [/^travelxp$/, Lang.doc],
+  [/^filmbox$/, Lang.cz],
+  [/^NGC/, Lang.doc],
+  [/^nat_geo/, Lang.doc],
+  [/^animal_planet$/, Lang.doc],
+  [/^spektrum$/, Lang.cz],
+  [/^viasat/, Lang.doc],
+  [/^natura/, Lang.doc],
+  [/^fishinghunting$/, Lang.sport],
+  [/^golf$/, Lang.sport],
+  [/^Film_Europe$/, Lang.cz],
+  [/^FightboxHD$/, Lang.sport],
+  [/^retro$/, Lang.music],
+  [/^(|.*_)(cs|cz)(|_.*)$/i, Lang.cz],
+  [/^(|.*_)en(|_.*)$/i, Lang.en],
+  [/^cartoon$/, Lang.en],
+  [/^boomerang$/, Lang.en],
+  [/^nick/i, Lang.cz],
+  [/^Jim_Jam$/, Lang.cz],
+  [/^Minimax$/, Lang.cz],
+  [/^TVlife$/, Lang.sk],
+  [/^baby_tv$/, Lang.en],
+  [/^Discovery$/, Lang.doc],
+  [/^TLC$/, Lang.cz],
+  [/^Science$/, Lang.doc],
+  [/^world$/, Lang.hobby],
+  [/^ID$/, Lang.cz],
+  [/^sat_crime_invest$/, Lang.cz],
+  [/^history$/, Lang.cz],
+  [/^cnn$/, Lang.news],
+  [/^tv5$/, Lang.fr],
+  [/^film_plus$/, Lang.cz],
+  [/^Fastnfunbox$/, Lang.sport],
+  [/^FilmboxArthouse$/, Lang.en],
+  [/^Filmbox/i, Lang.cz],
+  [/^360TuneBox$/, Lang.music],
+  [/^DocuBoxHD$/, Lang.doc],
+  [/^FashionboxHD$/, Lang.hobby],
+  [/^.*BoxHD$/i, Lang.en],
+  [/^kinosvet$/, Lang.cz],
+  [/^cinemax/, Lang.cz],
+  [/^amc$/, Lang.cz],
+  [/^lounge$/, Lang.en],
+  [/^Polar$/, Lang.czRegio],
+  [/^slovacko$/, Lang.czRegio],
+  [/^v1tv$/, Lang.czRegio],
+  [/^brno1$/, Lang.czRegio],
+  [/^praha$/, Lang.czRegio],
+  [/^rtm_plus_liberec$/, Lang.czRegio],
+  [/^regiotv$/, Lang.czRegio],
+  [/^tvnoe$/, Lang.cz],
+  [/^deluxe$/, Lang.music],
+  [/^slagr$/, Lang.music],
+  [/^orf/, Lang.de],
+  [/^sky_news$/, Lang.en],
+  [/^uatv$/, Lang.en],
+  [/^france/, Lang.fr],
+  [/^russiatoday/, Lang.news],
+  [/^rt_doc$/, Lang.doc],
+  [/^hobby$/, Lang.hobby],
+  [/^mnamtv$/, Lang.hobby],
+  [/^mnau$/, Lang.hobby],
+  [/^filmpro$/, Lang.czRegio],
+  [/^nasa/, Lang.hobby],
+  [/^mto/, Lang.noProgram],
+  [/^fireplace$/, Lang.slowTv],
+  [/^uscenes/, Lang.slowTv],
+  [/^night_prague$/, Lang.slowTv],
+  [/^loop_naturetv/, Lang.slowTv],
+  [/^stork_nest$/, Lang.slowTv]
+];
+
+function getProgramLang(name: string) {
+  for (let i = 0; i < programs.length; i++) {
+    const [re, lang] = programs[i];
+    if (name.match(re)) return lang;
   }
-  return output;
+  return undefined;
 }

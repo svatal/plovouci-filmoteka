@@ -14,9 +14,9 @@ export function parseDay(fileContent: string, date: Date) {
 function parseChannel(tr: CheerioElement, date: Date) {
   const $tr = cheerio.load(tr);
   const channelName = $tr(".schedule-channel")
-    .text()
-    .trim();
   const events: IBasicEventInfo[] = [];
+    .attr("id")
+    .slice(8);
   let skipAll = false;
   $tr(".schedule-event").each((_, event) => {
     if (skipAll) return;
@@ -45,7 +45,7 @@ function parseChannel(tr: CheerioElement, date: Date) {
     const $eventInfo = $event(".eventInfo");
     const name = $eventInfo.text();
     const href = $eventInfo.attr("href");
-    const id = href.match("eventId=(.*)&")[1];
+    const id = href.match("eventId=(.*)&")![1];
     events.push({
       channelName,
       durationInMinutes: 0,
