@@ -1,4 +1,6 @@
 scraper-dist/events.*
 scraper/cache/*
+fileScraper/cache/*
+fileScraper-dist/events.*
 web/dist/*
 node_modules

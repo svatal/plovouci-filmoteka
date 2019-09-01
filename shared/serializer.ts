@@ -44,3 +44,38 @@ export function deserialize(s: string): e.ITvMovie[] {
     return ei;
   });
 }
+
+export function serializeFileMovie(movies: e.IFileMovie[]): string {
+  const csv = movies.map<IRow>(movie => [
+    movie.name,
+    movie.tags,
+    movie.description.split("\n"),
+    movie.posterUrl,
+    movie.year,
+    movie.mdbs.map(mdb => [mdb.text, mdb.link]),
+    movie.durationInMinutes,
+    movie.files.map(e => [e.path])
+  ]);
+  return JSON.stringify(csv);
+}
+
+export function deserializeFileMovie(s: string): e.IFileMovie[] {
+  const csv: IRow[] = JSON.parse(s);
+  return csv.map((row: any[]) => {
+    const ei: e.IFileMovie = {
+      name: row.shift(),
+      tags: row.shift(),
+      description: row.shift().join("\n"),
+      posterUrl: row.shift(),
+      year: row.shift(),
+      mdbs: row
+        .shift()
+        .map((mdb: string[]) => ({ text: mdb.shift(), link: mdb.shift() })),
+      durationInMinutes: row.shift(),
+      files: row.shift().map((e: (string | number)[]) => ({
+        path: e.shift()
+      }))
+    };
+    return ei;
+  });
+}

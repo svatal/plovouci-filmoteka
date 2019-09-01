@@ -29,3 +29,13 @@ export interface ITvMovie extends IExtendedEventInfo {
   name: string;
   events: ITvEvent[];
 }
+
+export interface IFile {
+  path: string;
+}
+
+export interface IFileMovie extends IExtendedEventInfo {
+  name: string;
+  durationInMinutes: number;
+  files: IFile[];
+}

@@ -10,14 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "@types/jquery": "^3.3.21",
-    "bobril": "^8.17.0",
+    "bobril": "*",
     "bobrilstrap": "^3.0.2",
     "scraper-dist": "*",
     "shared": "*"
   },
   "bobril": {
     "title": "Plovoucí fimotéka",
-    "bbVersion": "0.84.0",
     "tsconfigUpdate": true,
     "compilerOptions": {
       "strictPropertyInitialization": false,
@@ -35,7 +34,6 @@
         "es2015.iterable",
         "es2015.collection"
       ],
-      "bbVersion": "0.87.0",
       "types": [
         "node_modules/@types"
       ]

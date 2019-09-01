@@ -5,6 +5,7 @@
       "scraper-shared",
       "scraper",
       "scraper-dist",
+      "fileScraper",
       "shared",
       "web"
     ]
