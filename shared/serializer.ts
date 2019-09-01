@@ -2,7 +2,7 @@ import * as e from "./event";
 
 type IRow = (number | string | string[] | (string | number)[][])[];
 
-export function serialize(movies: e.IMovie[]): string {
+export function serialize(movies: e.ITvMovie[]): string {
   const csv = movies.map<IRow>(movie => [
     movie.name,
     movie.tags,
@@ -21,10 +21,10 @@ export function serialize(movies: e.IMovie[]): string {
   return JSON.stringify(csv);
 }
 
-export function deserialize(s: string): e.IMovie[] {
+export function deserialize(s: string): e.ITvMovie[] {
   const csv: IRow[] = JSON.parse(s);
   return csv.map((row: any[]) => {
-    const ei: e.IMovie = {
+    const ei: e.ITvMovie = {
       name: row.shift(),
       tags: row.shift(),
       description: row.shift().join("\n"),

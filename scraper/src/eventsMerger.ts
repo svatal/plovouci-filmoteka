@@ -1,23 +1,26 @@
 import {
-  IEventInfo,
-  IMovie,
-  IEvent,
-  IBasicEventInfo,
+  ITvEventInfo,
+  ITvMovie,
+  ITvEvent,
+  IBasicTvEventInfo,
   IExtendedEventInfo
 } from "shared/event";
 
-export function merge(events: IEventInfo[]): IMovie[] {
-  return events.reduce(tryAppendEventToMovies, <IMovie[]>[]);
+export function merge(events: ITvEventInfo[]): ITvMovie[] {
+  return events.reduce(tryAppendEventToMovies, <ITvMovie[]>[]);
 }
 
-function tryAppendEventToMovies(movies: IMovie[], e: IEventInfo): IMovie[] {
+function tryAppendEventToMovies(
+  movies: ITvMovie[],
+  e: ITvEventInfo
+): ITvMovie[] {
   for (let i = 0; i < movies.length; i++) {
     if (tryAppendEventToMovie(movies[i], e)) return movies;
   }
   return [...movies, toMovie(e, e)];
 }
 
-function tryAppendEventToMovie(m: IMovie, e: IEventInfo): IMovie | null {
+function tryAppendEventToMovie(m: ITvMovie, e: ITvEventInfo): ITvMovie | null {
   if (
     m.posterUrl !== e.posterUrl ||
     m.description !== e.description ||
@@ -29,7 +32,7 @@ function tryAppendEventToMovie(m: IMovie, e: IEventInfo): IMovie | null {
   return m;
 }
 
-function toEvent(e: IBasicEventInfo, groupName?: string): IEvent {
+function toEvent(e: IBasicTvEventInfo, groupName?: string): ITvEvent {
   return {
     channelName: e.channelName,
     durationInMinutes: e.durationInMinutes,
@@ -44,9 +47,9 @@ function toEvent(e: IBasicEventInfo, groupName?: string): IEvent {
 
 function toMovie(
   ee: IExtendedEventInfo,
-  be: IBasicEventInfo,
+  be: IBasicTvEventInfo,
   groupName?: string
-): IMovie {
+): ITvMovie {
   return {
     description: ee.description,
     // groupName === undefined || groupName === be.name ? ee.description : "",
@@ -60,10 +63,10 @@ function toMovie(
 }
 
 export function mergeToOne(
-  events: IBasicEventInfo[],
+  events: IBasicTvEventInfo[],
   extended: IExtendedEventInfo,
   groupName: string
-): IMovie {
+): ITvMovie {
   const movie = toMovie(extended, events[0], groupName);
   events.slice(1).forEach(e => movie.events.push(toEvent(e, groupName)));
   return movie;

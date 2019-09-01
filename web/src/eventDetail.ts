@@ -7,7 +7,7 @@ import { badgeLink } from "./badgeLink";
 import { episodeName } from "./episodeName";
 import { compare } from "./romanAwareSorter";
 
-export interface IData extends e.IMovie {}
+export interface IData extends e.ITvMovie {}
 
 interface ICtx extends b.IBobrilCtx {
   data: IData;

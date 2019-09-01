@@ -1,10 +1,10 @@
 import * as cheerio from "cheerio";
-import { IBasicEventInfo, IExtendedEventInfo, IMdbEntry } from "shared/event";
+import { IBasicTvEventInfo, IExtendedEventInfo, IMdbEntry } from "shared/event";
 export * from "shared/event";
 
 export function parseDay(fileContent: string, date: Date) {
   const $content = cheerio.load(`<table>${fileContent}</table>`);
-  const events: IBasicEventInfo[] = [];
+  const events: IBasicTvEventInfo[] = [];
   $content("tr").each((i, tr) => {
     events.push(...parseChannel(tr, date));
   });
@@ -14,9 +14,9 @@ export function parseDay(fileContent: string, date: Date) {
 function parseChannel(tr: CheerioElement, date: Date) {
   const $tr = cheerio.load(tr);
   const channelName = $tr(".schedule-channel")
-  const events: IBasicEventInfo[] = [];
     .attr("id")
     .slice(8);
+  const events: IBasicTvEventInfo[] = [];
   let skipAll = false;
   $tr(".schedule-event").each((_, event) => {
     if (skipAll) return;

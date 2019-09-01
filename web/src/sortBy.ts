@@ -67,8 +67,8 @@ export const create = b.createComponent<IData>({
 });
 
 export function sort(
-  a: e.IMovie,
-  b: e.IMovie,
+  a: e.ITvMovie,
+  b: e.ITvMovie,
   { sortBy, sortAsc }: ISortDefinition
 ): number {
   const getter = sortPropertyGetter(sortBy, sortAsc);
@@ -91,7 +91,7 @@ export function sort(
 function sortPropertyGetter(
   sortBy: SortBy,
   sortAsc: boolean
-): (m: e.IMovie) => string | number | undefined {
+): (m: e.ITvMovie) => string | number | undefined {
   switch (sortBy) {
     case SortBy.name:
       return m => m.name;

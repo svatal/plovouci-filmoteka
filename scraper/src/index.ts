@@ -11,7 +11,7 @@ main();
 
 async function main() {
   let today = Date.now();
-  const events: { [name: string]: parser.IBasicEventInfo[] } = {};
+  const events: { [name: string]: parser.IBasicTvEventInfo[] } = {};
   let totalEvents = 0;
   for (let i = -7; i < 5; i++) {
     const day = new Date(today + i * 24 * 60 * 60 * 1000);
@@ -29,7 +29,7 @@ async function main() {
   console.log("total events:", totalEvents);
   console.log("CZ events:", Object.keys(events).length);
 
-  let movies: parser.IMovie[] = [];
+  let movies: parser.ITvMovie[] = [];
   for (const name in events) {
     const eventsGroup = events[name];
     const performExactMatch =

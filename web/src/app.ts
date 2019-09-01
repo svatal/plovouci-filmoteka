@@ -8,7 +8,7 @@ import * as f from "./filter";
 const eventsOnPage = 20;
 
 export interface IData {
-  movies: e.IMovie[];
+  movies: e.ITvMovie[];
 }
 
 interface ICtx extends b.IBobrilCtx {

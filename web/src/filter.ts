@@ -17,7 +17,7 @@ export interface ITagInfo {
 
 export interface IFilter {
   id: string;
-  test: (ev: e.IMovie) => boolean;
+  test: (ev: e.ITvMovie) => boolean;
 }
 
 interface ICtx extends b.IBobrilCtx {
