@@ -66,7 +66,7 @@ async function main() {
   const moviesString = s.serialize(movies);
 
   fs.writeFileSync(
-    "../scraper-dist/events.ts",
+    "../tvScraper-dist/events.ts",
     `export const es: string ='${moviesString
       .replace(/\\/g, "\\\\")
       .replace(/'/g, "\\'")}'`

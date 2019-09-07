@@ -1,6 +1,6 @@
-scraper-dist/events.*
-scraper/cache/*
+tvScraper-dist/events.*
+tvScraper/cache/*
+tvWeb/dist/*
 fileScraper/cache/*
 fileScraper-dist/events.*
-web/dist/*
 node_modules

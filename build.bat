@@ -1,4 +1,4 @@
-cd scraper
+cd tvScraper
 call npm run start
-cd ../web
+cd ../tvWeb
 call bb b
