@@ -3,7 +3,8 @@ import * as bs from "bobrilstrap";
 import * as e from "./event";
 import * as ed from "./eventDetail";
 import * as sb from "./sortBy";
-import * as f from "./filter";
+import * as f from "web-shared/filter";
+import { ITvMovie } from "shared/event";
 
 const eventsOnPage = 20;
 
@@ -13,18 +14,18 @@ export interface IData {
 
 interface ICtx extends b.IBobrilCtx {
   data: IData;
-  sort: sb.ISortDefinition;
-  filter: f.IFilter[];
+  sortId: number;
+  filter: f.IFilter<ITvMovie>[];
   displayMax: number;
 }
 
 export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
-    ctx.sort = sb.defaultValue;
+    ctx.sortId = sb.defaultValue;
     ctx.filter = [
       f.createTagFilter("Komedie"),
       f.createTagFilter("Romantic"),
-      f.createTimeFilter(60, 999)
+      f.createTimeFilter(60, 999, getDurationsInMinutes)
     ];
     ctx.displayMax = eventsOnPage;
   },
@@ -51,18 +52,20 @@ export const create = b.createComponent<IData>({
           ctx.filter = filter;
           ctx.displayMax = eventsOnPage;
           b.invalidate(ctx);
-        }
+        },
+        getDurationsInMinutes
       }),
       sb.create({
-        sort: ctx.sort,
-        onChange: sort => {
-          ctx.sort = sort;
+        options: sb.options,
+        selected: ctx.sortId,
+        onChange: selected => {
+          ctx.sortId = selected;
           ctx.displayMax = eventsOnPage;
           b.invalidate(ctx);
         }
       }),
       filteredEvents
-        .sort((a, b) => sb.sort(a, b, ctx.sort))
+        .sort((a, b) => sb.sort(a, b, sb.options[ctx.sortId]))
         .slice(0, ctx.displayMax)
         .map(e => ed.create(e)),
       filteredEvents.length > ctx.displayMax &&
@@ -89,4 +92,8 @@ function getTagCounts(events: e.IExtendedEventInfo[]) {
     e.tags.forEach(t => (tags[t] = (tags[t] === undefined ? 0 : tags[t]) + 1));
   });
   return tags;
+}
+
+function getDurationsInMinutes(movie: ITvMovie) {
+  return movie.events.map(e => e.durationInMinutes);
 }

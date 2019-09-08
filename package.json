@@ -4,10 +4,12 @@
     "packages": [
       "shared",
       "scraper-shared",
+      "web-shared",
       "tvScraper",
       "tvScraper-dist",
       "tvWeb",
-      "fileScraper"
+      "fileScraper",
+      "fileScraper-dist"
     ]
   }
 }

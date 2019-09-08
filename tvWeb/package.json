@@ -13,6 +13,7 @@
     "bobril": "*",
     "bobrilstrap": "^3.0.2",
     "tv-scraper-dist": "*",
+    "web-shared": "*",
     "shared": "*"
   },
   "bobril": {
@@ -34,9 +35,7 @@
         "es2015.iterable",
         "es2015.collection"
       ],
-      "types": [
-        "node_modules/@types"
-      ]
+      "types": []
     },
     "allowModuleDeepImport": true
   }

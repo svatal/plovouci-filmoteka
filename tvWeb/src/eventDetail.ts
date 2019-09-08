@@ -2,10 +2,10 @@ import * as b from "bobril";
 import * as bs from "bobrilstrap";
 import * as e from "./event";
 import * as airTime from "./airTime";
-import * as badgeBox from "./badgeBox";
-import { badgeLink } from "./badgeLink";
-import { episodeName } from "./episodeName";
-import { compare } from "./romanAwareSorter";
+import * as badgeBox from "web-shared/badgeBox";
+import { badgeLink } from "web-shared/badgeLink";
+import { episodeName } from "web-shared/episodeName";
+import { compare } from "web-shared/romanAwareSorter";
 
 export interface IData extends e.ITvMovie {}
 

@@ -25,8 +25,11 @@ export interface IMdbEntry {
   link: string;
 }
 
-export interface ITvMovie extends IExtendedEventInfo {
+export interface IMovie extends IExtendedEventInfo {
   name: string;
+}
+
+export interface ITvMovie extends IMovie {
   events: ITvEvent[];
 }
 
@@ -34,8 +37,7 @@ export interface IFile {
   path: string;
 }
 
-export interface IFileMovie extends IExtendedEventInfo {
-  name: string;
+export interface IFileMovie extends IMovie {
   durationInMinutes: number;
   files: IFile[];
 }
