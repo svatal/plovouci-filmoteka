@@ -1,0 +1,42 @@
+{
+  "name": "file-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "svatal",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jquery": "^3.3.21",
+    "bobril": "*",
+    "bobrilstrap": "^3.0.2",
+    "file-scraper-dist": "*",
+    "web-shared": "*",
+    "shared": "*"
+  },
+  "bobril": {
+    "title": "Fimotéka",
+    "tsconfigUpdate": true,
+    "compilerOptions": {
+      "strictPropertyInitialization": false,
+      "reactNamespace": "b",
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "strict": true,
+      "lib": [
+        "es5",
+        "dom",
+        "es2015.core",
+        "es2015.promise",
+        "es2015.iterable",
+        "es2015.collection"
+      ],
+      "types": []
+    },
+    "allowModuleDeepImport": true
+  }
+}

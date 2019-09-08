@@ -9,7 +9,8 @@
       "tvScraper-dist",
       "tvWeb",
       "fileScraper",
-      "fileScraper-dist"
+      "fileScraper-dist",
+      "fileWeb"
     ]
   }
 }
