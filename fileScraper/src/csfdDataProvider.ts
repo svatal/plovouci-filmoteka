@@ -11,6 +11,7 @@ export async function query(
   },
   fileName: string
 ): Promise<IFileMovie | undefined> {
+  if (!movie.title) return undefined;
   const queryString = movie.year ? `${movie.title} ${movie.year}` : movie.title;
   const searchUrl = `https://csfd.cz/hledat/?q=${encodeURIComponent(
     queryString

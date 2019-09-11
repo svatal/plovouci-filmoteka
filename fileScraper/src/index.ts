@@ -1,34 +1,42 @@
 import fs from "fs";
 import smb2 from "@danielhuisman/smb2";
 import tnp from "torrent-name-parser";
+import isVideo from "is-video";
 import * as s from "shared/serializer";
-import { mapAwait } from "scraper-shared/src/util";
+import {
+  mapAwait,
+  flatMapAwait,
+  filterOutFalsy
+} from "scraper-shared/src/util";
 import { query, printStats } from "./csfdDataProvider";
 
 async function main() {
-  // const smbClient = new smb2({
-  //   share: "\\\\openwrt\\media",
-  //   domain: "WORKGROUP",
-  //   username: "",
-  //   password: ""
-  //   // autoCloseTimeout: 0
-  // }) as any;
+  const smbClient = new smb2({
+    share: "\\\\openwrt\\media",
+    domain: "WORKGROUP",
+    username: "",
+    password: ""
+    // autoCloseTimeout: 0
+  }) as any;
 
-  // const result: any[] = await smbClient.readdir("cz2");
-  // const files = result.map(f => f.Filename as string);
-  const files = [
-    "Následníci (2015 Rodinný Dobrodružný Komedie Fantasy) CZ dabing.avi",
-    "Fantastická zvířata a kde je najít cz dabing novinka 2016.avi",
-    "Fantastická zvířata- Grindelwaldovy zločiny (2018) CZ dabing.avi",
-    "Hotel Transylvania 3 Příšerózní dovolená - ( CZ dabing 2018 ).avi",
-    "Hotel Transylvánie 1 2012 Cz Dab Doporučují KINGcool Animovaný Komedie.avi",
-    "Hotel-Transylvania-2-cz-dabing.avi",
-    "Naslednici 2 cz Dabing.avi",
-    "Vitej doma.CZ Dabing SUPER KOMEDIE!!!.avi",
-    "Vykolejená 2015 CZ dabing.avi"
-  ];
-  const movies = await mapAwait(files, getInfo);
-  console.log(movies.map(i => i && i.mdbs[0]));
+  async function getFileNames(directory: string): Promise<string[]> {
+    console.log("listing directory", directory);
+    const entries: {
+      Filename: string;
+      FileAttributes: number;
+    }[] = await smbClient.readdir(directory);
+    return flatMapAwait(entries, async e =>
+      e.FileAttributes & 16
+        ? await getFileNames(`${directory}${e.Filename}\\`)
+        : isVideo(e.Filename)
+        ? [`${directory}${e.Filename}`]
+        : []
+    );
+  }
+
+  const files = await getFileNames("\\");
+
+  const movies = filterOutFalsy(await mapAwait(files, getInfo));
 
   const moviesString = s.serializeFileMovie(movies);
 
@@ -45,14 +53,16 @@ async function main() {
 
 main();
 
-async function getInfo(fileName: string) {
+async function getInfo(filePath: string) {
+  const fileParts = filePath.split("\\");
+  const fileName = fileParts[fileParts.length - 1];
   return (
-    (await getSingleInfo(fileName, fileName)) ||
-    (await getSingleInfo(fileName.replace(/-/g, " "), fileName))
+    (await getSingleInfo(fileName, filePath)) ||
+    (await getSingleInfo(fileName.replace(/-/g, " "), filePath))
   );
 }
 
-function getSingleInfo(hintName: string, fileName: string) {
-  const nameInfo = tnp(hintName);
-  return query(nameInfo, fileName);
+function getSingleInfo(fileName: string, filePath: string) {
+  const nameInfo = tnp(fileName);
+  return query(nameInfo, filePath);
 }

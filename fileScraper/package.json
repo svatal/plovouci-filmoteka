@@ -17,6 +17,7 @@
   "dependencies": {
     "@danielhuisman/smb2": "^0.14.0",
     "torrent-name-parser": "^0.6.5",
+    "is-video": "*",
     "shared": "*",
     "scraper-shared": "*"
   }

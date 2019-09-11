@@ -3,4 +3,5 @@ tvScraper/cache/*
 tvWeb/dist/*
 fileScraper/cache/*
 fileScraper-dist/events.*
+fileWeb/dist/*
 node_modules
