@@ -23,7 +23,7 @@ export const create = b.createComponent<IData>({
     ctx.sortId = sb.defaultValue;
     ctx.filter = [
       f.createTagFilter("Komedie"),
-      f.createTagFilter("Romantic"),
+      f.createTagFilter("Romantický"),
       f.createTimeFilter(60, 999, getDurationsInMinutes)
     ];
     ctx.displayMax = eventsOnPage;

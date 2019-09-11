@@ -6,12 +6,16 @@ export { printStats };
 
 export async function query(
   movie: {
+    season?: number;
+    episode?: number;
     title: string;
     year?: number;
   },
   fileName: string
 ): Promise<IFileMovie | undefined> {
   if (!movie.title) return undefined;
+  if (movie.season !== undefined || movie.episode !== undefined)
+    return undefined; // no serials for now
   const queryString = movie.year ? `${movie.title} ${movie.year}` : movie.title;
   const searchUrl = `https://csfd.cz/hledat/?q=${encodeURIComponent(
     queryString
@@ -66,7 +70,7 @@ function parseEventInfo(content: string, fileName: string): IFileMovie {
     year: +$content("span[itemprop=dateCreated]").text(),
     mdbs: [
       {
-        text: `CSFD ${$content("#rating h2").text()}`,
+        text: `${$content("#rating h2").text()} ČSFD`,
         link: $content("link[rel=canonical]").attr("href")
       }
     ],

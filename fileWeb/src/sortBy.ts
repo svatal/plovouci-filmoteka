@@ -22,11 +22,6 @@ export const options: ISortOption<IFileMovie>[] = [
     propertyGetter: m => getMDB(m, "ČSFD"),
     sortAsc: false
   },
-  {
-    name: "Nejlépe hodnocené (IMDb)",
-    propertyGetter: m => getMDB(m, "IMDb"),
-    sortAsc: false
-  },
   { name: "Nejnovější (rok)", propertyGetter: m => m.year, sortAsc: false },
   { name: "Nejstarší (rok)", propertyGetter: m => m.year, sortAsc: true }
 ];
