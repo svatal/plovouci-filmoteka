@@ -33,8 +33,8 @@ export const options: ISortOption<ITvMovie>[] = [
     sortAsc: false
   },
   {
-    name: "Nejlépe hodnocené (ČSFD)",
-    propertyGetter: m => getMDB(m, "ČSFD"),
+    name: "Nejlépe hodnocené (TMDb)",
+    propertyGetter: m => getMDB(m, "TMDb"),
     sortAsc: false
   },
   {
