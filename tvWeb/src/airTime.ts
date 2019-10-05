@@ -1,17 +1,17 @@
 import * as bs from "bobrilstrap";
 import * as e from "./event";
+import { badgeLink } from "web-shared/badgeLink";
 
 export interface IData extends e.ITvEvent {}
 
 export const create = (data: IData) =>
-  bs.Badge(
-    {
-      style: {
-        backgroundColor: e.hasNotBeenAiredYet(data) ? undefined : "brown"
-      }
-    },
-    `${getAirTime(data)} (${data.durationInMinutes} min)`
-  );
+  e.hasNotBeenAiredYet(data)
+    ? bs.Badge({}, `${getAirTime(data)} (${data.durationInMinutes} min)`)
+    : badgeLink({
+        link: `http://sledovanitv.cz/home#event%3A${data.id}`,
+        color: "brown",
+        text: `${getAirTime(data)} (${data.durationInMinutes} min)`
+      });
 
 function getAirTime(i: e.ITvEvent) {
   const minutes = i.startTime.getMinutes();
