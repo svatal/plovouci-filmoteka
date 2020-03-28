@@ -11,11 +11,19 @@ export async function query(
     title: string;
     year?: number;
   },
-  fileName: string
+  filePath: string
 ): Promise<IFileMovie | undefined> {
-  if (!movie.title) return undefined;
-  if (movie.season !== undefined || movie.episode !== undefined)
+  if (!movie.title) {
+    console.log(`unable to identify ${filePath} - no title`, movie);
+    return undefined;
+  }
+  if (movie.season !== undefined || movie.episode !== undefined) {
+    console.log(
+      `unable to identify ${filePath} - looks like an episode`,
+      movie
+    );
     return undefined; // no serials for now
+  }
   const queryString = movie.year ? `${movie.title} ${movie.year}` : movie.title;
   const searchUrl = `https://csfd.cz/hledat/?q=${encodeURIComponent(
     queryString
@@ -24,14 +32,21 @@ export async function query(
   const [winnerUrl] = parseCandidates(content);
   let winnerContent: string;
   if (winnerUrl === undefined) {
-    if (isList(content)) return undefined;
+    if (isList(content)) {
+      console.log(
+        `unable to identify ${filePath} - no csfd result`,
+        queryString,
+        movie
+      );
+      return undefined;
+    }
     winnerContent = content;
   } else {
     const winnerId = parseCsfdId(winnerUrl);
     const absoluteWinnerUrl = `https://csfd.cz${winnerUrl}`;
     winnerContent = await get(winnerId, absoluteWinnerUrl);
   }
-  return parseEventInfo(winnerContent, fileName);
+  return parseEventInfo(winnerContent, filePath);
 }
 
 function isList(content: string) {
@@ -51,7 +66,7 @@ function parseCsfdId(url: string) {
   return url.replace(/\//g, "");
 }
 
-function parseEventInfo(content: string, fileName: string): IFileMovie {
+function parseEventInfo(content: string, filePath: string): IFileMovie {
   const $content = cheerio.load(content);
   return {
     description: $content("#plots .content div")
@@ -77,7 +92,7 @@ function parseEventInfo(content: string, fileName: string): IFileMovie {
     tags: $content(".genre")
       .text()
       .split(" / "),
-    files: [{ path: fileName }]
+    files: [{ path: filePath }]
   };
 }
 

@@ -61,10 +61,7 @@ async function getInfo(filePath: string) {
     fileName = fileParts.pop()!;
     if (fileName === "VIDEO_TS") fileName = fileParts.pop()!;
   }
-  return (
-    /*(await getSingleInfo(fileName, filePath)) ||*/
-    await getSingleInfo(fileName.replace(/-/g, " "), filePath)
-  );
+  return await getSingleInfo(fileName.replace(/-/g, " "), filePath);
 }
 
 function getSingleInfo(fileName: string, filePath: string) {
