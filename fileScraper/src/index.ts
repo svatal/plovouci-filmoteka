@@ -48,17 +48,21 @@ async function main() {
   );
   printStats();
 
-  // smbClient.disconnect();
+  smbClient.disconnect();
 }
 
 main();
 
 async function getInfo(filePath: string) {
   const fileParts = filePath.split("\\");
-  const fileName = fileParts[fileParts.length - 1];
+  let fileName = fileParts.pop()!;
+  if (fileName.toLocaleLowerCase().endsWith(".vob")) {
+    fileName = fileParts.pop()!;
+    if (fileName === "VIDEO_TS") fileName = fileParts.pop()!;
+  }
   return (
-    (await getSingleInfo(fileName, filePath)) ||
-    (await getSingleInfo(fileName.replace(/-/g, " "), filePath))
+    /*(await getSingleInfo(fileName, filePath)) ||*/
+    await getSingleInfo(fileName.replace(/-/g, " "), filePath)
   );
 }
 
