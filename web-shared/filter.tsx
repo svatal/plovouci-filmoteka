@@ -63,7 +63,7 @@ export const create = b.component(
                   }
                 >
                   <Anchor>
-                    `${tag.name} (${tag.selectionCount})`
+                    {tag.name} ({tag.selectionCount})
                   </Anchor>
                 </DropdownItem>
               ))}
