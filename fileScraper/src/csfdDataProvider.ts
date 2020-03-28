@@ -66,7 +66,7 @@ function parseEventInfo(content: string, fileName: string): IFileMovie {
     name: $content("h1")
       .text()
       .trim(),
-    posterUrl: $content(".film-poster").attr("src"),
+    posterUrl: addProtocolIfNeeded($content(".film-poster").attr("src")),
     year: +$content("span[itemprop=dateCreated]").text(),
     mdbs: [
       {
@@ -83,4 +83,9 @@ function parseEventInfo(content: string, fileName: string): IFileMovie {
 
 function getSecondToLast<T>(a: T[]) {
   return a[a.length - 2];
+}
+
+function addProtocolIfNeeded(url: string) {
+  if (url && url.startsWith("//")) return `http:${url}`;
+  return url;
 }
