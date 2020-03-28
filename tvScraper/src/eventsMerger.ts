@@ -3,7 +3,8 @@ import {
   ITvMovie,
   ITvEvent,
   IBasicTvEventInfo,
-  IExtendedEventInfo
+  IExtendedEventInfo,
+  isSameMovie
 } from "shared/event";
 
 export function merge(events: ITvEventInfo[]): ITvMovie[] {
@@ -21,13 +22,7 @@ function tryAppendEventToMovies(
 }
 
 function tryAppendEventToMovie(m: ITvMovie, e: ITvEventInfo): ITvMovie | null {
-  if (
-    m.posterUrl !== e.posterUrl ||
-    m.description !== e.description ||
-    m.tags.length !== e.tags.length ||
-    m.mdbs.length !== e.mdbs.length
-  )
-    return null;
+  if (!isSameMovie(m, e)) return null;
   m.events.push(toEvent(e));
   return m;
 }

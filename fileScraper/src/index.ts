@@ -9,6 +9,7 @@ import {
   filterOutFalsy
 } from "scraper-shared/src/util";
 import { query, printStats } from "./csfdDataProvider";
+import { IFileMovie, isSameMovie } from "shared/event";
 
 async function main() {
   const smbClient = new smb2({
@@ -36,7 +37,7 @@ async function main() {
 
   const files = await getFileNames("\\");
 
-  const movies = filterOutFalsy(await mapAwait(files, getInfo));
+  const movies = deduplicate(filterOutFalsy(await mapAwait(files, getInfo)));
 
   const moviesString = s.serializeFileMovie(movies);
 
@@ -69,4 +70,17 @@ async function getInfo(filePath: string) {
 function getSingleInfo(fileName: string, filePath: string) {
   const nameInfo = tnp(fileName);
   return query(nameInfo, filePath);
+}
+
+function deduplicate(movies: IFileMovie[]) {
+  return movies.reduce((m, current) => {
+    for (let i = 0; i < m.length; i++) {
+      if (isSameMovie(m[i], current)) {
+        m[i].files.push(...current.files);
+        return m;
+      }
+    }
+    m.push(current);
+    return m;
+  }, <IFileMovie[]>[]);
 }

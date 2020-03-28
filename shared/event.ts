@@ -41,3 +41,15 @@ export interface IFileMovie extends IMovie {
   durationInMinutes: number;
   files: IFile[];
 }
+
+export function isSameMovie(
+  m: IExtendedEventInfo,
+  e: IExtendedEventInfo
+): boolean {
+  return (
+    m.posterUrl === e.posterUrl &&
+    m.description === e.description &&
+    m.tags.length === e.tags.length &&
+    m.mdbs.length === e.mdbs.length
+  );
+}
