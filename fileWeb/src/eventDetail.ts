@@ -2,10 +2,9 @@ import * as b from "bobril";
 import * as bs from "bobrilstrap";
 import * as badgeBox from "web-shared/badgeBox";
 import { badgeLink } from "web-shared/badgeLink";
-// import { episodeName } from "web-shared/episodeName";
-// import { compare } from "web-shared/romanAwareSorter";
 import { IFileMovie } from "shared/event";
 import { Badge } from "bobrilstrap";
+import { markAsSeen, isSeen } from "./seen";
 
 export interface IData extends IFileMovie {}
 
@@ -13,17 +12,10 @@ interface ICtx extends b.IBobrilCtx {
   data: IData;
 }
 
-// let selectedName = b.propi("");
-
 export const create = b.createVirtualComponent<IData>({
   render(ctx: ICtx, me: b.IBobrilNode) {
     const m = ctx.data;
     const files = m.files;
-    // const episodeNames = Array.from(new Set(files.map(e => e.name!))).sort(
-    //   compare
-    // );
-    // const showEpisodes = !!files[0].name;
-    const showEpisodes = false;
     me.children = bs.Media({}, [
       bs.MediaContent(
         { alignment: bs.MediaContentAlignment.Left },
@@ -32,9 +24,6 @@ export const create = b.createVirtualComponent<IData>({
       bs.MediaContent({ alignment: bs.MediaContentAlignment.Body }, [
         badgeBox.create({
           badges: [
-            // ...files
-            //   .filter(e => !showEpisodes || e.name === selectedName())
-            //   .map(e => airTime.create(e)),
             ...m.mdbs.map(mdb =>
               badgeLink({ link: mdb.link, text: mdb.text, color: "red" })
             ),
@@ -43,20 +32,25 @@ export const create = b.createVirtualComponent<IData>({
             )
           ]
         }),
-        bs.MediaHeading2({}, [m.year > 0 ? `${m.name} (${m.year})` : m.name]),
+        bs.MediaHeading2(
+          { style: isSeen(ctx.data) ? { color: "grey" } : undefined },
+          [
+            m.year > 0 ? `${m.name} (${m.year})` : m.name,
+            " ",
+            !isSeen(ctx.data) &&
+              bs.Button(
+                { onClick: () => markAsSeen(ctx.data) },
+                "Označit jako viděno"
+              )
+          ]
+        ),
         m.tags.map(t => bs.Badge({}, t)),
+        m.durationInMinutes &&
+          bs.Badge(
+            { style: { backgroundColor: "brown" } },
+            `${m.durationInMinutes}min`
+          ),
         { tag: "br" },
-        // showEpisodes &&
-        //   episodeNames.map(name =>
-        //     episodeName({
-        //       name,
-        //       selected: selectedName,
-        //       allInTheFuture: files
-        //         .filter(e => e.name === name)
-        //         .every(e.hasNotBeenAiredYet)
-        //     })
-        //   ),
-        showEpisodes && { tag: "br" },
         m.description
       ])
     ]);

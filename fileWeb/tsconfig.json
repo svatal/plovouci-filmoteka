@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
     "allowJs": false,
+    "allowSyntheticDefaultImports": true,
     "checkJs": false,
     "declaration": false,
+    "downlevelIteration": true,
     "experimentalDecorators": true,
     "jsx": "react",
     "lib": [

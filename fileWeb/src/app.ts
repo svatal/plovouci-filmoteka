@@ -4,6 +4,7 @@ import * as ed from "./eventDetail";
 import * as sb from "./sortBy";
 import * as f from "web-shared/filter";
 import { IFileMovie, IExtendedEventInfo } from "shared/event";
+import { isSeen } from "./seen";
 
 const eventsOnPage = 20;
 
@@ -18,14 +19,14 @@ interface ICtx extends b.IBobrilCtx {
   displayMax: number;
 }
 
+function createUnseenFilter(): f.IFilterWithLabel<IFileMovie> {
+  return { id: "neviděno", label: "neviděno", test: movie => !isSeen(movie) };
+}
+
 export const create = b.createComponent<IData>({
   init(ctx: ICtx) {
     ctx.sortId = sb.defaultValue;
-    ctx.filter = [
-      f.createTagFilter("Komedie"),
-      f.createTagFilter("Romantický"),
-      f.createTimeFilter(60, 999, getDurationsInMinutes)
-    ];
+    ctx.filter = [createUnseenFilter()];
     ctx.displayMax = eventsOnPage;
   },
   render(ctx: ICtx, me: b.IBobrilNode) {
@@ -42,11 +43,12 @@ export const create = b.createComponent<IData>({
 
     b.style(me, { padding: 10 });
     me.children = [
-      bs.H1({}, "Plovoucí filmotéka"),
+      bs.H1({}, "Filmotéka"),
       f.create({
         tags: tagInfos,
         eventCount: ctx.data.movies.length,
         selectedCount: filteredEvents.length,
+        customFilters: [createUnseenFilter()],
         filter: ctx.filter,
         onChange: filter => {
           ctx.filter = filter;
