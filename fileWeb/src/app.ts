@@ -69,7 +69,7 @@ export const create = b.createComponent<IData>({
       filteredEvents
         .sort((a, b) => sb.sort(a, b, sb.options[ctx.sortId]))
         .slice(0, ctx.displayMax)
-        .map(e => ed.create(e)),
+        .map(e => ed.create({ movie: e })),
       filteredEvents.length > ctx.displayMax &&
         b.style(
           bs.Button(

@@ -7,7 +7,7 @@ export interface IData {
   text: string;
 }
 
-export const badgeLink = (data: IData) => (
+export const BadgeLink = (data: IData) => (
   <Anchor href={data.link} target={Target.Blank}>
     <Badge style={{ backgroundColor: data.color }}>{data.text}</Badge>
   </Anchor>

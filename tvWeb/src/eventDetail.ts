@@ -3,7 +3,7 @@ import * as bs from "bobrilstrap";
 import * as e from "./event";
 import * as airTime from "./airTime";
 import * as badgeBox from "web-shared/badgeBox";
-import { badgeLink } from "web-shared/badgeLink";
+import { BadgeLink } from "web-shared/badgeLink";
 import { episodeName } from "web-shared/episodeName";
 import { compare } from "web-shared/romanAwareSorter";
 
@@ -35,7 +35,7 @@ export const create = b.createVirtualComponent<IData>({
               .filter(e => !showEpisodes || e.name === selectedName())
               .map(e => airTime.create(e)),
             ...m.mdbs.map(mdb =>
-              badgeLink({ link: mdb.link, text: mdb.text, color: "red" })
+              BadgeLink({ link: mdb.link, text: mdb.text, color: "red" })
             )
           ]
         }),

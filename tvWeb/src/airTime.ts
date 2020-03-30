@@ -1,13 +1,13 @@
 import * as bs from "bobrilstrap";
 import * as e from "./event";
-import { badgeLink } from "web-shared/badgeLink";
+import { BadgeLink } from "web-shared/badgeLink";
 
 export interface IData extends e.ITvEvent {}
 
 export const create = (data: IData) =>
   e.hasNotBeenAiredYet(data)
     ? bs.Badge({}, `${getAirTime(data)} (${data.durationInMinutes} min)`)
-    : badgeLink({
+    : BadgeLink({
         link: `http://sledovanitv.cz/home#event%3A${data.id}`,
         color: "brown",
         text: `${getAirTime(data)} (${data.durationInMinutes} min)`
