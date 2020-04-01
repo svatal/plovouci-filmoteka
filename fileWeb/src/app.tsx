@@ -57,7 +57,7 @@ export function App(props: { movies: IFileMovie[] }) {
         .sort((a, b) => sb.sort(a, b, sb.options[sortId]))
         .slice(0, displayMax)
         .map(e => (
-          <EventDetail movie={e} />
+          <EventDetail movie={e} key={e.files[0].path} />
         ))}
       {filteredEvents.length > displayMax && (
         <div style={bs.helpers.centerBlock}>
