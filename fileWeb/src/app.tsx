@@ -14,7 +14,7 @@ export function App(props: { movies: IFileMovie[] }) {
 
   return (
     <div style={{ padding: 10 }}>
-      <H1>"Filmotéka"</H1>
+      <H1>Filmotéka</H1>
       <div>
         <ButtonGroup>
           <Button

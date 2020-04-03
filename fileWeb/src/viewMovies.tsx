@@ -70,11 +70,12 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
           />
         ))}
       {filteredEvents.length > displayMax && (
-        <div style={bs.helpers.centerBlock}>
-          <Button onClick={() => setDisplayMax(displayMax + eventsOnPage)}>
-            Další
-          </Button>
-        </div>
+        <Button
+          style={bs.helpers.centerBlock}
+          onClick={() => setDisplayMax(displayMax + eventsOnPage)}
+        >
+          Další
+        </Button>
       )}
     </>
   );
