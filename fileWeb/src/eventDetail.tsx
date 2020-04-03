@@ -8,12 +8,14 @@ import {
   MediaContent,
   Image,
   MediaHeading2,
-  Button,
   MediaContentAlignment
 } from "bobrilstrap";
-import { markAsSeen, isSeen } from "./seen";
 
-export function EventDetail(props: { movie: IFileMovie }) {
+export function EventDetail(props: {
+  movie: IFileMovie;
+  greyedHeading?: boolean;
+  actionButton?: b.IBobrilChild;
+}) {
   const m = props.movie;
   return (
     <Media>
@@ -31,12 +33,11 @@ export function EventDetail(props: { movie: IFileMovie }) {
             ))
           ]}
         />
-        <MediaHeading2 style={isSeen(m) ? { color: "grey" } : undefined}>
+        <MediaHeading2
+          style={props.greyedHeading ? { color: "grey" } : undefined}
+        >
           {m.name}
-          {m.year > 0 && ` (${m.year})`}{" "}
-          {!isSeen(m) && (
-            <Button onClick={() => markAsSeen(m)}>Označit jako viděno</Button>
-          )}
+          {m.year > 0 && ` (${m.year})`} {props.actionButton}
         </MediaHeading2>
         {m.tags.map(t => (
           <Badge>{t}</Badge>
