@@ -11,7 +11,7 @@ import {
   MediaContentAlignment
 } from "bobrilstrap";
 
-export function EventDetail(props: {
+export function MovieDetail(props: {
   movie: IFileMovie;
   greyedHeading?: boolean;
   actionButton?: b.IBobrilChild;
@@ -54,4 +54,4 @@ export function EventDetail(props: {
   );
 }
 
-export const create = b.component(EventDetail);
+export const create = b.component(MovieDetail);

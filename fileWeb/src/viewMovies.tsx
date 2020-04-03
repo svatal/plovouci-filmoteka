@@ -1,14 +1,11 @@
 import * as b from "bobril";
-import * as bs from "bobrilstrap";
-import { EventDetail } from "./eventDetail";
 import * as sb from "./sortBy";
 import * as f from "web-shared/filter";
 import { create as Filter } from "web-shared/filter";
 import { IFileMovie, IExtendedEventInfo } from "shared/event";
 import { isSeen, markAsSeen } from "./seen";
 import { Button } from "bobrilstrap";
-
-const eventsOnPage = 20;
+import { EventList as MovieList } from "./movieList";
 
 function createUnseenFilter(): f.IFilterWithLabel<IFileMovie> {
   return { id: "neviděno", label: "neviděno", test: movie => !isSeen(movie) };
@@ -19,8 +16,6 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
   const [filter, setFilter] = b.useState<f.IFilter<IFileMovie>[]>([
     createUnseenFilter()
   ]);
-  const [displayMax, setDisplayMax] = b.useState(eventsOnPage);
-
   const filteredEvents = props.movies.filter(e => filter.every(f => f.test(e)));
   const filteredTagCounts = getTagCounts(filteredEvents);
   const tagInfos = Object.getOwnPropertyNames(filteredTagCounts).map<
@@ -40,7 +35,6 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
         filter={filter}
         onChange={filter => {
           setFilter(filter);
-          setDisplayMax(eventsOnPage);
         }}
         getDurationsInMinutes={getDurationsInMinutes}
       />
@@ -49,34 +43,20 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
         selected={sortId}
         onChange={selected => {
           setSortId(selected);
-          setDisplayMax(eventsOnPage);
         }}
       ></sb.create>
-      {filteredEvents
-        .sort((a, b) => sb.sort(a, b, sb.options[sortId]))
-        .slice(0, displayMax)
-        .map(m => (
-          <EventDetail
-            movie={m}
-            greyedHeading={isSeen(m)}
-            actionButton={
-              !isSeen(m) && (
-                <Button onClick={() => markAsSeen(m)}>
-                  Označit jako viděno
-                </Button>
-              )
-            }
-            key={m.files[0].path}
-          />
-        ))}
-      {filteredEvents.length > displayMax && (
-        <Button
-          style={bs.helpers.centerBlock}
-          onClick={() => setDisplayMax(displayMax + eventsOnPage)}
-        >
-          Další
-        </Button>
-      )}
+      <MovieList
+        movies={filteredEvents.sort((a, b) =>
+          sb.sort(a, b, sb.options[sortId])
+        )}
+        greyedHeading={isSeen}
+        actionButton={m =>
+          !isSeen(m) && (
+            <Button onClick={() => markAsSeen(m)}>Označit jako viděno</Button>
+          )
+        }
+        key={`${sortId}/${filter.map(f => f.id).join()}`} // reset EventList (displayMax) when changing sorting and/or filtering
+      />
     </>
   );
 }
