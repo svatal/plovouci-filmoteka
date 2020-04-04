@@ -6,6 +6,9 @@ import { IFileMovie, IExtendedEventInfo } from "shared/event";
 import { isSeen, markAsSeen } from "./seen";
 import { Button } from "bobrilstrap";
 import { EventList as MovieList } from "./movieList";
+import { default as localeIndexOfFactory } from "locale-index-of";
+
+const localeIndexOf = localeIndexOfFactory(Intl);
 
 function createUnseenFilter(): f.IFilterWithLabel<IFileMovie> {
   return { id: "neviděno", label: "neviděno", test: movie => !isSeen(movie) };
@@ -16,7 +19,19 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
   const [filter, setFilter] = b.useState<f.IFilter<IFileMovie>[]>([
     createUnseenFilter()
   ]);
-  const filteredEvents = props.movies.filter(e => filter.every(f => f.test(e)));
+  const [search, setSearch] = b.useState("");
+  const filteredEvents = props.movies.filter(
+    e =>
+      filter.every(f => f.test(e)) &&
+      [
+        e.name,
+        e.description,
+        e.year.toString(),
+        ...e.files.map(f => f.path)
+      ].some(
+        s => localeIndexOf(s, search, undefined, { sensitivity: "base" }) >= 0
+      )
+  );
   const filteredTagCounts = getTagCounts(filteredEvents);
   const tagInfos = Object.getOwnPropertyNames(filteredTagCounts).map<
     f.ITagInfo
@@ -38,6 +53,10 @@ export function ViewMovies(props: { movies: IFileMovie[] }) {
         }}
         getDurationsInMinutes={getDurationsInMinutes}
       />
+      <div>
+        Vyhledat:&nbsp;
+        <input type="text" value={search} onChange={s => setSearch(s)}></input>
+      </div>
       <sb.create
         options={sb.options}
         selected={sortId}
