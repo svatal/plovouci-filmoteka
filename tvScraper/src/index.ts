@@ -18,8 +18,9 @@ async function main() {
     const content = await data.getContent(day);
     const dayEvents = parser.parseDay(content, day);
     totalEvents += dayEvents.length;
-    dayEvents.forEach(e => {
+    dayEvents.forEach((e) => {
       if (getProgramLang(e.channelName) !== Lang.cz) return;
+      if (locked.indexOf(e.channelName) >= 0) return;
 
       const serialNameMatch = e.name.match(/(.*?)( [MDCLXVI]*)? \(.*/);
       const name = serialNameMatch ? serialNameMatch[1] : e.name;
@@ -39,16 +40,16 @@ async function main() {
     if (performExactMatch) {
       movies.push(
         ...eventMerger.merge(
-          await mapAwait(eventsGroup, async e => ({
+          await mapAwait(eventsGroup, async (e) => ({
             ...e,
-            ...parser.parseInfo(await data.getInfo(e.id))
+            ...parser.parseInfo(await data.getInfo(e.id)),
           }))
         )
       );
     } else {
       if (eventsGroup[0].name === name) continue; // skip non-serials
       if (!showEpisodes) continue;
-      const knownEvent = eventsGroup.find(e => data.know(e.id));
+      const knownEvent = eventsGroup.find((e) => data.know(e.id));
       const infoContent = knownEvent
         ? await data.getInfo(knownEvent.id)
         : await data.getInfo(
@@ -91,7 +92,7 @@ enum Lang {
   sk,
   en,
   fr,
-  de
+  de,
 }
 
 const programs: [RegExp, Lang][] = [
@@ -184,13 +185,115 @@ const programs: [RegExp, Lang][] = [
   [/^uscenes/, Lang.slowTv],
   [/^night_prague$/, Lang.slowTv],
   [/^loop_naturetv/, Lang.slowTv],
-  [/^stork_nest$/, Lang.slowTv]
+  [/^stork_nest$/, Lang.slowTv],
 ];
+
+const nolangPrograms = new Set<string>();
 
 function getProgramLang(name: string) {
   for (let i = 0; i < programs.length; i++) {
     const [re, lang] = programs[i];
     if (name.match(re)) return lang;
   }
+  if (!nolangPrograms.has(name)) {
+    nolangPrograms.add(name);
+    console.warn(`Program '${name}' has not identified language!`);
+  }
   return undefined;
 }
+
+// $('tr:has(.order)').map((_, tr) => $(tr).attr('id')).toArray().map(id => id.slice(8));
+const locked = [
+  "france24_fr",
+  "filmpro",
+  "loop_naturetv-galerie-zvirat",
+  "loop_naturetv-osetrovani-mladat",
+  "fireplace",
+  "uscenes_cat_cafe",
+  "uscenes_coral_garden",
+  "uscenes_hammock_beach",
+  "loop_naturetv_mumlava_waterfalls",
+  "info_tv_brno",
+  "rt_ustecko",
+  "zaktv",
+  "haha_tv",
+  "zdf",
+  "nova_sport",
+  "nova_sport2",
+  "jojcinema",
+  "ockoHD",
+  "ocko_starHD",
+  "ocko_expresHD",
+  "ocko_blackHD",
+  "HBO",
+  "HBO2",
+  "hbo_comedy",
+  "cinemax1",
+  "cinemax2",
+  "axn",
+  "axnblack",
+  "axnwhite",
+  "travelxp",
+  "nat_geo_wild",
+  "NGC_HD",
+  "animal_planet",
+  "travelhd",
+  "viasat_history",
+  "viasat_explore",
+  "viasat_nature",
+  "Eurosport",
+  "Eurosport2",
+  "Sport1",
+  "Sport2",
+  "slovak_sport",
+  "sport5",
+  "auto_motor_sport",
+  "fishinghunting",
+  "golf",
+  "Film_Europe",
+  "pohoda",
+  "rebel",
+  "VH1",
+  "cs_film",
+  "cartoon_cz",
+  "cartoon",
+  "boomerang",
+  "Kino_CS",
+  "Nickelodeon",
+  "nickjr",
+  "Disney_Channel",
+  "disney_junior",
+  "Jim_Jam",
+  "baby_tv",
+  "Discovery",
+  "TLC",
+  "Science",
+  "world",
+  "ID",
+  "sat_crime_invest",
+  "history",
+  "cnn",
+  "tv5",
+  "film_plus",
+  "deluxe",
+  "mtv",
+  "nick_jr_en",
+  "lala_tv",
+  "tv_paprika",
+  "m1",
+  "m2",
+  "duna",
+  "dunaworld",
+  "mezzo_live",
+  "mezzo",
+  "russia_channel1",
+  "dom_kino",
+  "dom_kino_premium",
+  "vremya",
+  "poehali",
+  "muzika_pervogo",
+  "bobyor",
+  "telekanal_o",
+  "telecafe",
+  "karousel",
+];
