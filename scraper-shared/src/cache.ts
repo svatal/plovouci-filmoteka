@@ -7,7 +7,11 @@ export interface ICache {
 }
 
 export class DiskCache implements ICache {
-  constructor(private directory: string) {}
+  constructor(private directory: string) {
+    if (!fs.existsSync(this.directory)) {
+      fs.mkdirSync(directory);
+    }
+  }
 
   private getPath(key: string) {
     return this.directory + "/" + key;
