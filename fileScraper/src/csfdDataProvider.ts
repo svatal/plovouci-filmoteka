@@ -57,7 +57,7 @@ function parseCandidates(content: string): string[] {
   const $content = cheerio.load(content);
   const hrefs: string[] = [];
   $content("#search-films h3.subject a.film").each((_, e) =>
-    hrefs.push(e.attribs["href"])
+    hrefs.push($content(e).attr("href")!)
   );
   return hrefs;
 }
@@ -69,30 +69,19 @@ function parseCsfdId(url: string) {
 function parseEventInfo(content: string, filePath: string): IFileMovie {
   const $content = cheerio.load(content);
   return {
-    description: $content("#plots .content div")
-      .first()
-      .text()
-      .trim(),
-    durationInMinutes: +getSecondToLast(
-      $content(".origin")
-        .text()
-        .split(" ")
-    ),
-    name: $content("h1")
-      .text()
-      .trim(),
-    posterUrl: addProtocolIfNeeded($content(".film-poster").attr("src")),
+    description: $content("#plots .content div").first().text().trim(),
+    durationInMinutes: +getSecondToLast($content(".origin").text().split(" ")),
+    name: $content("h1").text().trim(),
+    posterUrl: addProtocolIfNeeded($content(".film-poster").attr("src")!),
     year: +$content("span[itemprop=dateCreated]").text(),
     mdbs: [
       {
         text: `${$content("#rating h2").text()} ČSFD`,
-        link: $content("link[rel=canonical]").attr("href")
-      }
+        link: $content("link[rel=canonical]").attr("href")!,
+      },
     ],
-    tags: $content(".genre")
-      .text()
-      .split(" / "),
-    files: [{ path: filePath }]
+    tags: $content(".genre").text().split(" / "),
+    files: [{ path: filePath }],
   };
 }
 

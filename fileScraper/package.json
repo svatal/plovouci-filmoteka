@@ -10,13 +10,13 @@
   "author": "svatal",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^12.6.9",
-    "ts-node": "^8.3.0",
-    "typescript": "^3.5.3"
+    "@types/node": "*",
+    "ts-node": "*",
+    "typescript": "*"
   },
   "dependencies": {
-    "@danielhuisman/smb2": "^0.14.0",
-    "torrent-name-parser": "^0.6.5",
+    "@marsaud/smb2": "*",
+    "torrent-name-parser": "*",
     "is-video": "*",
     "shared": "*",
     "scraper-shared": "*"

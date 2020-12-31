@@ -11,11 +11,9 @@ export function parseDay(fileContent: string, date: Date) {
   return events;
 }
 
-function parseChannel(tr: CheerioElement, date: Date) {
+function parseChannel(tr: cheerio.Element, date: Date) {
   const $tr = cheerio.load(tr);
-  const channelName = $tr(".schedule-channel")
-    .attr("id")
-    .slice(8);
+  const channelName = $tr(".schedule-channel").attr("id")!.slice(8);
   const events: IBasicTvEventInfo[] = [];
   let skipAll = false;
   $tr(".schedule-event").each((_, event) => {
@@ -24,7 +22,7 @@ function parseChannel(tr: CheerioElement, date: Date) {
     const time = $event(".time")
       .text()
       .split(":")
-      .map(i => parseInt(i));
+      .map((i) => parseInt(i));
     const startTime = new Date(
       date.getFullYear(),
       date.getMonth(),
@@ -44,14 +42,14 @@ function parseChannel(tr: CheerioElement, date: Date) {
     }
     const $eventInfo = $event(".eventInfo");
     const name = $eventInfo.text();
-    const href = $eventInfo.attr("href");
+    const href = $eventInfo.attr("href")!;
     const id = href.match("eventId=(.*)&")![1];
     events.push({
       channelName,
       durationInMinutes: 0,
       id,
       name,
-      startTime
+      startTime,
     });
   });
   return events;
@@ -64,14 +62,12 @@ export function parseInfo(content: string): IExtendedEventInfo {
   $content(".event-info .event-percentage .event-percentage-line").each(
     (_, line) => {
       const $line = cheerio.load(line);
-      const text = $line("*")
-        .text()
-        .replace("·", "");
+      const text = $line("*").text().replace("·", "");
       if (text.trim().match(/^\d{4}$/)) {
         year = +text;
       } else {
         if (text.indexOf("\n") >= 0) {
-          tags.push(...text.split("/").map(s => s.trim()));
+          tags.push(...text.split("/").map((s) => s.trim()));
         } else {
           //   console.log(`should be country: '${text.trim()}'`);
         }
@@ -79,15 +75,15 @@ export function parseInfo(content: string): IExtendedEventInfo {
     }
   );
   const description = $content(".event-description-long").text();
-  const posterUrl = $content(".event-poster-img").attr("src");
+  const posterUrl = $content(".event-poster-img").attr("src")!;
   const mdbs: IMdbEntry[] = [];
   $content(".event-info .event-mdb-link a").each((_, link) => {
     const $link = cheerio.load(link)("a");
     const text = $link.text().trim();
-    const url = $link.attr("href");
+    const url = $link.attr("href")!;
     mdbs.push({
       text,
-      link: url
+      link: url,
     });
   });
   return {
@@ -95,6 +91,6 @@ export function parseInfo(content: string): IExtendedEventInfo {
     description,
     posterUrl,
     year,
-    mdbs
+    mdbs,
   };
 }

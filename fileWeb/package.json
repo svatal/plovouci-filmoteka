@@ -9,11 +9,11 @@
   "author": "svatal",
   "license": "ISC",
   "dependencies": {
-    "@types/jquery": "^3.3.21",
+    "@types/jquery": "*",
     "bobril": "*",
-    "bobrilstrap": "^3.0.2",
+    "bobrilstrap": "*",
     "file-scraper-dist": "*",
-    "locale-index-of": "^1.0.7",
+    "locale-index-of": "*",
     "shared": "*",
     "web-shared": "*"
   },

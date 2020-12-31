@@ -10,12 +10,12 @@
   "author": "svatal",
   "license": "ISC",
   "devDependencies": {
-    "ts-node": "^7.0.1",
-    "typescript": "^3.2.2"
+    "ts-node": "*",
+    "typescript": "*"
   },
   "dependencies": {
-    "@types/cheerio": "^0.22.10",
-    "cheerio": "^1.0.0-rc.2",
+    "@types/cheerio": "*",
+    "cheerio": "*",
     "shared": "*",
     "scraper-shared": "*"
   }

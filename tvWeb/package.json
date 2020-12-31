@@ -9,12 +9,12 @@
   "author": "svatal",
   "license": "ISC",
   "dependencies": {
-    "@types/jquery": "^3.3.21",
+    "@types/jquery": "*",
     "bobril": "*",
-    "bobrilstrap": "^3.0.2",
+    "bobrilstrap": "*",
+    "shared": "*",
     "tv-scraper-dist": "*",
-    "web-shared": "*",
-    "shared": "*"
+    "web-shared": "*"
   },
   "bobril": {
     "title": "Plovoucí fimotéka",
