@@ -31,9 +31,9 @@ export const create = b.component(
               { onClick: () => data.onChange(i) },
               bs.Anchor({}, o.name)
             )
-          )
+          ),
         ])
-      )
+      ),
     ];
   }
 ) as <TMovie extends IMovie>(
@@ -41,8 +41,8 @@ export const create = b.component(
 ) => b.IBobrilNode<IData<TMovie>>;
 
 const sortByName: ISortDefinition<IMovie> = {
-  propertyGetter: m => m.name,
-  sortAsc: true
+  propertyGetter: (m) => m.name,
+  sortAsc: true,
 };
 
 export function sort<TMovie extends IMovie>(
@@ -63,7 +63,7 @@ export function sort<TMovie extends IMovie>(
 }
 
 export function getMDB(e: IMovie, mdbName: string): number | undefined {
-  const mdb = e.mdbs.find(mdb => mdb.text.indexOf(mdbName) >= 0);
+  const mdb = e.mdbs.find((mdb) => mdb.text.indexOf(mdbName) >= 0);
   if (!mdb) return undefined;
-  return parseInt(mdb.text);
+  return parseFloat(mdb.text);
 }
